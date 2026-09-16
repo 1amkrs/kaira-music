@@ -1,4 +1,4 @@
-package com.lastwave.app.playback
+package com.lastwave.app.data.plugin
 
 import android.content.Context
 import android.net.Uri

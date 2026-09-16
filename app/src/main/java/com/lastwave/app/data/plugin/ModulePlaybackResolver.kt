@@ -1,7 +1,10 @@
 package com.lastwave.app.data.plugin
 
 import android.util.Log
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -88,6 +91,46 @@ class ModulePlaybackResolver @Inject constructor(
         return descriptor
     }
 
+    /** Quality badge from the extension's own labels; fallback when unreachable. */
+    suspend fun badgeFor(descriptor: SegmentedStreamDescriptor, fallback: String): String {
+        currentCoroutineContext().ensureActive()
+        val handle = try {
+            manager.findHandleById(descriptor.provider)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (_: Exception) {
+            null
+        } ?: return fallback
+        val labels = try {
+            runner.modulePolicy(handle)?.labels
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (_: Exception) {
+            null
+        } ?: return fallback
+        return labels[descriptor.stream.quality.uppercase()]
+            ?: labels[descriptor.stream.quality]
+            ?: fallback
+    }
+
+    /** Whether the extension wants its downloads transcoded (default yes). */
+    suspend fun shouldTranscode(descriptor: SegmentedStreamDescriptor): Boolean {
+        currentCoroutineContext().ensureActive()
+        val handle = try {
+            manager.findHandleById(descriptor.provider)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (_: Exception) {
+            null
+        } ?: return true
+        return try {
+            runner.modulePolicy(handle)?.transcode != "never"
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (_: Exception) {
+            true
+        }
+    }
     private fun accept(descriptor: SegmentedStreamDescriptor): Boolean {
         if (descriptor.stream.baseUrl.isBlank()) return false
         // Progressive clear streams carry no segments; segmented ones must.

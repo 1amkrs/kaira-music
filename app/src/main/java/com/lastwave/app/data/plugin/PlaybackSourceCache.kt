@@ -1,5 +1,6 @@
 package com.lastwave.app.data.plugin
 
+import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -102,7 +103,7 @@ class PlaybackSourceCache @Inject constructor(
     private fun persist() {
         runCatching {
             stateFile().apply { parentFile?.mkdirs() }.writeText(
-                json.encodeToString(DiskState(memory.toMap())),
+                json.encodeToString(DiskState.serializer(), DiskState(memory.toMap())),
             )
         }
     }

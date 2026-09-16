@@ -135,6 +135,7 @@ class TrackDownloadManager @Inject constructor(
     private val segBridge: SegmentedDashBridge,
     private val offlineLicense: ModuleOfflineLicense,
     private val moduleManager: ModuleManager,
+    private val flacTranscoder: ModuleFlacTranscoder,
 ) {
     companion object {
         const val CHANNEL_ID = "lastwave_downloads"
@@ -688,6 +689,60 @@ class TrackDownloadManager @Inject constructor(
                         }
                     }
 
+                    // 3a. Served clear? The box-walk proves no sample-encryption
+                    // boxes anywhere: bytes are already pure playable audio.
+                    // Skip transcode, license and sidecar entirely.
+                    val moduleClear = moduleDescriptor?.takeIf { it.drm != null }?.let { desc ->
+                        desc.stream.type != "progressive" &&
+                            !Mp4EncryptionScanner.isEncrypted(tempDownloadFile)
+                    } == true
+
+                    // 3b. Module DRM: transcode decrypted PCM into true FLAC so the
+                    // stored file plays in any local player. Any failure falls
+                    // through to the license-persisted encrypted path below.
+                    var transcodedFlac: File? = null
+                    val transcodeDesc = moduleDescriptor?.takeIf { it.drm != null && !moduleClear }?.takeIf { desc ->
+                        // Extension decides; missing/unreachable policy keeps current behavior.
+                        try {
+                            moduleResolver.shouldTranscode(desc)
+                        } catch (cancellation: CancellationException) {
+                            throw cancellation
+                        } catch (_: Exception) {
+                            true
+                        }
+                    }
+                    if (transcodeDesc != null) {
+                        transcodedFlac = try {
+                            flacTranscoder.transcodeToFlac(
+                                sourceFile = tempDownloadFile,
+                                descriptor = transcodeDesc,
+                                title = title,
+                                artist = artist,
+                                album = resolvedAlbum,
+                                artworkUri = resolvedArtworkUrl,
+                            )
+                        } catch (cancellation: CancellationException) {
+                            throw cancellation
+                        } catch (_: Exception) {
+                            null
+                        }
+                        if (transcodedFlac != null) {
+                            runCatching { tempDownloadFile.delete() }
+                            tempDownloadFile = transcodedFlac
+                            moduleLicenseDeferred?.cancel()
+                            extension = "flac"
+                            mimeType = "audio/flac"
+                            formatBadge = try {
+                                moduleResolver.badgeFor(transcodeDesc, segBridge.audioBadge(transcodeDesc))
+                            } catch (cancellation: CancellationException) {
+                                throw cancellation
+                            } catch (_: Exception) {
+                                segBridge.audioBadge(transcodeDesc)
+                            }
+                            isLossless = true
+                        }
+                    }
+
                     val safeFilename = sanitizeFilename("$artist - $title") + ".$extension"
 
                     // 4. Resolve exact audio duration from downloaded file
@@ -850,6 +905,32 @@ class TrackDownloadManager @Inject constructor(
                     downloadedAtMillis = System.currentTimeMillis(),
                 )
                 downloadedTrackDao.insert(entity)
+
+                // 6b. Module DRM: persist offline keys + sidecar so the encrypted
+                // file plays without network. Skipped when transcoding already
+                // produced a plain FLAC, or the bytes arrived clear (3a).
+                if (moduleDescriptor?.drm != null && transcodedFlac == null && !moduleClear) {
+                    val drm = moduleDescriptor!!.drm!!
+                    val keys = try {
+                        moduleLicenseDeferred?.await()
+                    } catch (_: Exception) {
+                        null
+                    } ?: throw IOException("Offline license refused by provider; retry while online")
+                    val withKeys = moduleDescriptor!!.copy(drm = drm.copy(keySetIdB64 = keys.keySetIdB64))
+                    moduleManager.writeOfflineSidecar(
+                        title, artist,
+                        OfflineSidecar(
+                            descriptorJson = moduleManager.encodeDescriptor(withKeys),
+                            keySetIdB64 = keys.keySetIdB64,
+                            licenseUrl = drm.licenseUrl,
+                            licenseExpiresAtMs = keys.licenseExpiresAtMs,
+                            audioFilePath = finalPath,
+                            mediaStoreUri = uri?.toString().orEmpty(),
+                            bytes = tempDownloadFile.length(),
+                            downloadedAtMs = System.currentTimeMillis(),
+                        ),
+                    )
+                }
 
                 updateProgress(
                     DownloadProgress(
@@ -1870,30 +1951,6 @@ class TrackDownloadManager @Inject constructor(
                             downloadedAtMillis = if (date > 0) date else System.currentTimeMillis(),
                         )
                 downloadedTrackDao.insert(entity)
-
-                // 6b. Module DRM: persist offline keys + sidecar so the file
-                // plays without network. Keys are device-bound CDM storage.
-                moduleDescriptor?.drm?.let { drm ->
-                    val keys = try {
-                        moduleLicenseDeferred?.await()
-                    } catch (_: Exception) {
-                        null
-                    } ?: throw IOException("Offline license refused by provider; retry while online")
-                    val withKeys = moduleDescriptor!!.copy(drm = drm.copy(keySetIdB64 = keys.keySetIdB64))
-                    moduleManager.writeOfflineSidecar(
-                        title, artist,
-                        OfflineSidecar(
-                            descriptorJson = moduleManager.encodeDescriptor(withKeys),
-                            keySetIdB64 = keys.keySetIdB64,
-                            licenseUrl = drm.licenseUrl,
-                            licenseExpiresAtMs = keys.licenseExpiresAtMs,
-                            audioFilePath = finalPath,
-                            mediaStoreUri = uri?.toString().orEmpty(),
-                            bytes = tempDownloadFile.length(),
-                            downloadedAtMs = System.currentTimeMillis(),
-                        ),
-                    )
-                }
                         existingUris.add(uri.toString())
                         existingKeys.add(trackKey)
                     }

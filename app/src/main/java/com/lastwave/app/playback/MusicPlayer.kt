@@ -3035,7 +3035,13 @@ class MusicPlayer @Inject constructor(
             url = segBridge.mpdUri(descriptor).toString(),
             mimeType = MimeTypes.APPLICATION_MPD,
             bitrateKbps = s.bandwidth.takeIf { it > 0 }?.div(1000),
-            audioCodec = segBridge.audioBadge(descriptor),
+            audioCodec = try {
+                moduleResolver.badgeFor(descriptor, segBridge.audioBadge(descriptor))
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (_: Exception) {
+                segBridge.audioBadge(descriptor)
+            },
             cacheKey = descriptor.stableCacheKey(),
             isLossless = !s.codec.equals("opus", ignoreCase = true),
             bitDepth = s.bitDepth.takeIf { it > 0 },

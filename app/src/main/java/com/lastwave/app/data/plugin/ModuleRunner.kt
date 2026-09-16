@@ -114,6 +114,30 @@ class ModuleRunner @Inject constructor(
             )
         }
 
+    /** Cached per-module download policy (one engine call per process). */
+    private val policyCache = ConcurrentHashMap<String, ModulePolicy>()
+
+    suspend fun modulePolicy(handle: ProviderHandle): ModulePolicy? {
+        policyCache[handle.id]?.let { return it }
+        val raw = runCatching {
+            withEngine(handle) { js ->
+                js.evaluate<String>(
+                    "globalThis.LastWave.${globalOf(handle)}.getDownloadPolicy().then(r=>JSON.stringify(r));",
+                    "policy.js",
+                )
+            }
+        }.getOrNull() ?: return null
+        return runCatching {
+            val o = JSONObject(raw)
+            val labels = mutableMapOf<String, String>()
+            o.optJSONObject("labels")?.keys()?.forEach { k -> labels[k] = o.optJSONObject("labels").optString(k) }
+            ModulePolicy(
+                transcode = o.optString("transcode", ""),
+                labels = labels,
+            ).also { policyCache[handle.id] = it }
+        }.getOrNull()
+    }
+
     private fun globalOf(handle: ProviderHandle): String =
         handle.manifest.global.ifBlank { "LastWaveProvider" }
 
@@ -273,3 +297,9 @@ class ModuleRunner @Inject constructor(
 
     private fun q(raw: String): String = JSONObject.quote(raw)
 }
+
+/** Extension-owned download policy: the module decides, the host executes. */
+data class ModulePolicy(
+    val transcode: String = "",
+    val labels: Map<String, String> = emptyMap(),
+)
