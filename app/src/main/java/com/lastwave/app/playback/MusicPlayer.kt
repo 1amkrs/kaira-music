@@ -2745,30 +2745,33 @@ class MusicPlayer @Inject constructor(
             (sidecar.bytes > 0 && filePath != null &&
                 runCatching { File(filePath).length() == sidecar.bytes }.getOrDefault(false))
         if (!matches) return null
-        var descriptor = runCatching {
+        val initialDesc = runCatching {
             persistenceJson.decodeFromString<com.lastwave.app.data.plugin.SegmentedStreamDescriptor>(
                 sidecar.descriptorJson,
             )
         }.getOrNull()
-        val drm = descriptor?.drm ?: return null
-        descriptor = descriptor?.copy(drm = drm.copy(keySetIdB64 = sidecar.keySetIdB64, licenseUrl = sidecar.licenseUrl))
-            ?: return null
-        if (System.currentTimeMillis() > sidecar.licenseExpiresAtMs) {
+        val drm = initialDesc?.drm ?: return null
+        val readyDesc = initialDesc.copy(drm = drm.copy(keySetIdB64 = sidecar.keySetIdB64, licenseUrl = sidecar.licenseUrl))
+        val finalDesc = if (System.currentTimeMillis() > sidecar.licenseExpiresAtMs) {
             val renewed = withTimeoutOrNull(OFFLINE_LICENSE_RENEW_TIMEOUT_MS) {
-                offlineLicense.renew(descriptor, sidecar.keySetIdB64)
+                offlineLicense.renew(readyDesc, sidecar.keySetIdB64)
             } ?: return null
-            descriptor = descriptor.copy(
-                drm = descriptor.drm!!.copy(keySetIdB64 = renewed.keySetIdB64),
+            val updated = readyDesc.copy(
+                drm = readyDesc.drm.copy(keySetIdB64 = renewed.keySetIdB64),
             )
             moduleManager.writeOfflineSidecar(
                 displayTitle, displayArtist,
                 sidecar.copy(
                     keySetIdB64 = renewed.keySetIdB64,
                     licenseExpiresAtMs = renewed.licenseExpiresAtMs,
-                    descriptorJson = moduleManager.encodeDescriptor(descriptor),
+                    descriptorJson = moduleManager.encodeDescriptor(updated),
                 ),
             )
+            updated
+        } else {
+            readyDesc
         }
+        var descriptor = finalDesc
         val s = descriptor.stream
         return ResolvedStream(
             url = segBridge.mpdUriForBase(descriptor, targetUrl).toString(),

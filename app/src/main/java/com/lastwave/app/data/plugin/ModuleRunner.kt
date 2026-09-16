@@ -188,22 +188,22 @@ class ModuleRunner @Inject constructor(
             "sleepMs:a=>globalThis.__lw_sleepMs(a)};\"__bridge_ready__\";"
 
     private fun bindBridge(engine: QuickJs, handle: ProviderHandle) {
-        fun strArg(args: Array<out Any?>): String = args.firstOrNull() as? String ?: ""
-        bindGlobalFn(engine, "__lw_httpRequest") { args -> httpRequest(strArg(args)) }
-        bindGlobalFn(engine, "__lw_rsaSign") { args -> rsaSign(strArg(args)) }
-        bindGlobalFn(engine, "__lw_b64decode") { args ->
+        fun strArg(args: Array<Any?>): String = args.firstOrNull() as? String ?: ""
+        engine.bindGlobalFn<String>("__lw_httpRequest") { args: Array<Any?> -> httpRequest(strArg(args)) }
+        engine.bindGlobalFn<String>("__lw_rsaSign") { args: Array<Any?> -> rsaSign(strArg(args)) }
+        engine.bindGlobalFn<String>("__lw_b64decode") { args: Array<Any?> ->
             String(Base64.decode(strArg(args), Base64.DEFAULT), Charsets.UTF_8)
         }
-        bindGlobalFn(engine, "__lw_b64encode") { args ->
+        engine.bindGlobalFn<String>("__lw_b64encode") { args: Array<Any?> ->
             Base64.encodeToString(strArg(args).toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
         }
-        bindGlobalFn(engine, "__lw_storeGet") { args ->
+        engine.bindGlobalFn<String>("__lw_storeGet") { args: Array<Any?> ->
             manager.storeGet(handle, strArg(args)) ?: ""
         }
-        bindGlobalFn(engine, "__lw_storeSet") { args -> storeSet(handle, strArg(args)) }
-        bindGlobalFn(engine, "__lw_logWrite") { args -> logWrite(handle, strArg(args)) }
-        bindGlobalFn(engine, "__lw_uuid") { _ -> UUID.randomUUID().toString() }
-        bindGlobalFn(engine, "__lw_sleepMs") { args ->
+        engine.bindGlobalFn<String>("__lw_storeSet") { args: Array<Any?> -> storeSet(handle, strArg(args)) }
+        engine.bindGlobalFn<String>("__lw_logWrite") { args: Array<Any?> -> logWrite(handle, strArg(args)) }
+        engine.bindGlobalFn<String>("__lw_uuid") { _: Array<Any?> -> UUID.randomUUID().toString() }
+        engine.bindGlobalFn<String>("__lw_sleepMs") { args: Array<Any?> ->
             val ms = runCatching { JSONObject(strArg(args)).optLong("ms", 0L) }.getOrDefault(0L)
             if (ms > 0) Thread.sleep(ms.coerceAtMost(10_000L))
             "ok"
