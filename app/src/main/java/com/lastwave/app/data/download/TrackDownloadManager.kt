@@ -23,6 +23,13 @@ import com.lastwave.app.data.lyrics.LyricsResult
 import com.lastwave.app.data.music.InnerTubeMusicApi
 import com.lastwave.app.data.music.YouTubeMusicTrack
 import com.lastwave.app.data.lossless.LosslessMusicApi
+import com.lastwave.app.data.plugin.ModuleManager
+import com.lastwave.app.data.plugin.ModuleOfflineLicense
+import com.lastwave.app.data.plugin.ModulePlaybackResolver
+import com.lastwave.app.data.plugin.OfflineKeys
+import com.lastwave.app.data.plugin.OfflineSidecar
+import com.lastwave.app.data.plugin.SegmentedDashBridge
+import com.lastwave.app.data.plugin.SegmentedStreamDescriptor
 import com.lastwave.app.data.local.DownloadFolderStructure
 import com.lastwave.app.data.local.MiscSettings
 import com.lastwave.app.data.local.SettingsPreferences
@@ -32,6 +39,7 @@ import com.lastwave.app.data.artwork.ArtworkRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -123,6 +131,10 @@ class TrackDownloadManager @Inject constructor(
     private val downloadedTrackDao: DownloadedTrackDao,
     private val settingsPreferences: SettingsPreferences,
     private val applicationScope: CoroutineScope,
+    private val moduleResolver: ModulePlaybackResolver,
+    private val segBridge: SegmentedDashBridge,
+    private val offlineLicense: ModuleOfflineLicense,
+    private val moduleManager: ModuleManager,
 ) {
     companion object {
         const val CHANNEL_ID = "lastwave_downloads"
@@ -472,6 +484,38 @@ class TrackDownloadManager @Inject constructor(
                         }
                         isLossless = true
                         durationMs = 0L
+                    }
+                }
+
+                // 1b. Provider modules (segmented DRM only): same CloudFront
+                // bytes the player streams, fetched as one contiguous range.
+                var moduleDescriptor: SegmentedStreamDescriptor? = null
+                var moduleLicenseDeferred: Deferred<OfflineKeys?>? = null
+                if (resolvedUrl == null && downloadQuality != LosslessMusicApi.QUALITY_YOUTUBE) {
+                    moduleDescriptor = runCatching {
+                        moduleResolver.resolve(title, artist, downloadQuality)
+                    }.getOrNull()?.takeIf { desc ->
+                        val s = desc.stream
+                        desc.drm != null && s.baseUrl.isNotBlank() &&
+                            s.type != "progressive" && s.segments.isNotEmpty()
+                    }
+                    moduleDescriptor?.let { desc ->
+                        val s = desc.stream
+                        resolvedUrl = s.baseUrl
+                        downloadHeaders = desc.headers
+                        expectedContentLength = s.segments
+                            .mapNotNull { it.range.substringAfterLast("-").toLongOrNull() }
+                            .maxOrNull()?.plus(1)
+                        useParallelDownload = true
+                        extension = "m4a"
+                        mimeType = "audio/mp4"
+                        formatBadge = segBridge.audioBadge(desc)
+                        isLossless = !s.codec.equals("opus", ignoreCase = true)
+                        durationMs = desc.durationSec * 1000L
+                        // Offline license in parallel with the bytes.
+                        moduleLicenseDeferred = applicationScope.async(Dispatchers.IO) {
+                            runCatching { offlineLicense.acquire(desc) }.getOrNull()
+                        }
                     }
                 }
 
@@ -1825,7 +1869,31 @@ class TrackDownloadManager @Inject constructor(
                             isLossless = isFlac,
                             downloadedAtMillis = if (date > 0) date else System.currentTimeMillis(),
                         )
-                        downloadedTrackDao.insert(entity)
+                downloadedTrackDao.insert(entity)
+
+                // 6b. Module DRM: persist offline keys + sidecar so the file
+                // plays without network. Keys are device-bound CDM storage.
+                moduleDescriptor?.drm?.let { drm ->
+                    val keys = try {
+                        moduleLicenseDeferred?.await()
+                    } catch (_: Exception) {
+                        null
+                    } ?: throw IOException("Offline license refused by provider; retry while online")
+                    val withKeys = moduleDescriptor!!.copy(drm = drm.copy(keySetIdB64 = keys.keySetIdB64))
+                    moduleManager.writeOfflineSidecar(
+                        title, artist,
+                        OfflineSidecar(
+                            descriptorJson = moduleManager.encodeDescriptor(withKeys),
+                            keySetIdB64 = keys.keySetIdB64,
+                            licenseUrl = drm.licenseUrl,
+                            licenseExpiresAtMs = keys.licenseExpiresAtMs,
+                            audioFilePath = finalPath,
+                            mediaStoreUri = uri?.toString().orEmpty(),
+                            bytes = tempDownloadFile.length(),
+                            downloadedAtMs = System.currentTimeMillis(),
+                        ),
+                    )
+                }
                         existingUris.add(uri.toString())
                         existingKeys.add(trackKey)
                     }
