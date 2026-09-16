@@ -712,7 +712,7 @@ class TrackDownloadManager @Inject constructor(
                         }
                     }
                     if (transcodeDesc != null) {
-                        transcodedFlac = try {
+                        val transResult = try {
                             flacTranscoder.transcodeToFlac(
                                 sourceFile = tempDownloadFile,
                                 descriptor = transcodeDesc,
@@ -726,6 +726,7 @@ class TrackDownloadManager @Inject constructor(
                         } catch (_: Exception) {
                             null
                         }
+                        transcodedFlac = transResult?.file
                         if (transcodedFlac != null) {
                             runCatching { tempDownloadFile.delete() }
                             tempDownloadFile = transcodedFlac

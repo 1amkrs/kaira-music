@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaCodec
 import android.media.MediaFormat
 import android.net.Uri
+import androidx.media3.common.C
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -201,13 +202,6 @@ class ModuleFlacTranscoder @Inject constructor(
             var streamInfo: ByteArray? = null
             val pendingFrames = mutableListOf<ByteArray>()
             var out: java.io.OutputStream? = null
-            fun onStreamInfo(bytes: ByteArray) {
-                if (streamInfo == null) {
-                    streamInfo = bytes
-                    // Frames may have arrived before the header: flush them now.
-                    if (pendingFrames.isNotEmpty()) ensureOutput()
-                }
-            }
             fun ensureOutput(): java.io.OutputStream {
                 var o = out
                 if (o == null) {
@@ -222,6 +216,13 @@ class ModuleFlacTranscoder @Inject constructor(
                     out = o
                 }
                 return o
+            }
+            fun onStreamInfo(bytes: ByteArray) {
+                if (streamInfo == null) {
+                    streamInfo = bytes
+                    // Frames may have arrived before the header: flush them now.
+                    if (pendingFrames.isNotEmpty()) ensureOutput()
+                }
             }
             pcmFile.inputStream().buffered().use { input ->
                 var inputEos = false

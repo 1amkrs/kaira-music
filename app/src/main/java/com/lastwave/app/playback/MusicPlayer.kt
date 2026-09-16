@@ -2757,7 +2757,7 @@ class MusicPlayer @Inject constructor(
                 offlineLicense.renew(readyDesc, sidecar.keySetIdB64)
             } ?: return null
             val updated = readyDesc.copy(
-                drm = readyDesc.drm.copy(keySetIdB64 = renewed.keySetIdB64),
+                drm = readyDesc.drm?.copy(keySetIdB64 = renewed.keySetIdB64),
             )
             moduleManager.writeOfflineSidecar(
                 displayTitle, displayArtist,

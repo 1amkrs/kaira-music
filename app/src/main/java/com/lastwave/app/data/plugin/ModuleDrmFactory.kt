@@ -103,7 +103,12 @@ class ModuleDrmFactory @Inject constructor(
             okHttp.newCall(req).execute().use { res ->
                 if (!res.isSuccessful) {
                     throw HttpDataSource.InvalidResponseCodeException(
-                        res.code, res.message, null, res.headers.toMap(), res.body?.bytes() ?: ByteArray(0),
+                        res.code,
+                        res.message,
+                        null,
+                        res.headers.toMultimap(),
+                        androidx.media3.datasource.DataSpec(android.net.Uri.parse(url)),
+                        res.body?.bytes() ?: ByteArray(0),
                     )
                 }
                 return res.body?.bytes() ?: ByteArray(0)

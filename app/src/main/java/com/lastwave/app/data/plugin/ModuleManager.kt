@@ -168,7 +168,7 @@ class ModuleManager @Inject constructor(
 
     private fun writeRegistry(modules: List<InstalledProviderModule>) {
         runCatching {
-            registryFile().writeText(json.encodeToString(ProviderRegistry(modules)))
+            registryFile().writeText(json.encodeToString(ProviderRegistry.serializer(), ProviderRegistry(modules)))
         }
     }
 

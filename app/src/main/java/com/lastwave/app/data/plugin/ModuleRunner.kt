@@ -146,9 +146,11 @@ class ModuleRunner @Inject constructor(
         block: suspend (QuickJs) -> String,
     ): String = withContext(Dispatchers.IO) {
         val pooled = engines.getOrPut(handle.id) {
-            PooledEngine(QuickJs(Dispatchers.IO)).also {
-                it.js.setEvaluationTimeoutMillis(EVAL_TIMEOUT_MS)
-            }
+            PooledEngine(
+                QuickJs.create(Dispatchers.IO).apply {
+                    maxEvalTimeMs = EVAL_TIMEOUT_MS
+                },
+            )
         }
         pooled.lock.withLock {
             try {

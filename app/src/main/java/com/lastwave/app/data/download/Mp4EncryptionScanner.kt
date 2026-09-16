@@ -48,7 +48,7 @@ internal object Mp4EncryptionScanner {
             if (size == 1L) {
                 if (off + 16 > end) return true
                 if (raf.read(header, 8, 8) != 8) return true
-                size = (0L until 8).fold(0L) { acc, i ->
+                size = (0 until 8).fold(0L) { acc, i ->
                     (acc shl 8) or (header[8 + i].toInt() and 0xFF).toLong()
                 }
                 headerSize = 16L
