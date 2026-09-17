@@ -1241,7 +1241,7 @@ class AudioTagWriter @Inject constructor(
             if (artworkBytes != null) add("covr")
         }
         val ilstItems = ByteArrayOutputStream()
-        ilstItems.write(removeTopLevelBoxes(existingItems, replacedItems))
+        ilstItems.write(removeTopLevelBoxes(existingItems, replacedItems, fallbackToOriginal = false))
         addMp4TextItem(ilstItems, "\u00A9nam", title)       // ©nam
         addMp4TextItem(ilstItems, "\u00A9ART", artist)      // ©ART
         addMp4TextItem(ilstItems, "aART", artist)
@@ -1266,9 +1266,13 @@ class AudioTagWriter @Inject constructor(
         val metaBody = ByteArrayOutputStream()
         metaBody.write(0x00); metaBody.write(0x00); metaBody.write(0x00); metaBody.write(0x00) // version+flags (FullBox)
         metaBody.write(hdlrBox)
-        metaBody.write(removeTopLevelBoxes(existingMeta, setOf("hdlr", "ilst")))
+        metaBody.write(removeTopLevelBoxes(existingMeta, setOf("hdlr", "ilst"), fallbackToOriginal = false))
         metaBody.write(ilstBox)
-        val udtaBox = wrapBox("udta", removeTopLevelBoxes(existingUdta, setOf("meta")) + wrapBox("meta", metaBody.toByteArray()))
+        val udtaBox = wrapBox(
+            "udta",
+            removeTopLevelBoxes(existingUdta, setOf("meta"), fallbackToOriginal = false) +
+                wrapBox("meta", metaBody.toByteArray())
+        )
 
 
         // Clean out any existing udta boxes so we don't produce duplicate udta boxes
@@ -1354,7 +1358,11 @@ class AudioTagWriter @Inject constructor(
         }
         return null
     }
-    private fun removeTopLevelBoxes(bytes: ByteArray, boxTypes: Set<String>): ByteArray {
+    private fun removeTopLevelBoxes(
+        bytes: ByteArray,
+        boxTypes: Set<String>,
+        fallbackToOriginal: Boolean = true,
+    ): ByteArray {
         val out = ByteArrayOutputStream()
         var offset = 0
         while (offset + 8 <= bytes.size) {
@@ -1363,12 +1371,12 @@ class AudioTagWriter @Inject constructor(
             val boxSize = when (size32) {
                 0L -> (bytes.size - offset).toLong()
                 1L -> {
-                    if (offset + 16 > bytes.size) return bytes
-                    readBeUInt64(bytes, offset + 8) ?: return bytes
+                    if (offset + 16 > bytes.size) return if (fallbackToOriginal) bytes else byteArrayOf()
+                    readBeUInt64(bytes, offset + 8) ?: return if (fallbackToOriginal) bytes else byteArrayOf()
                 }
                 else -> size32
             }
-            if (boxSize < 8 || offset + boxSize > bytes.size) return bytes
+            if (boxSize < 8 || offset + boxSize > bytes.size) return if (fallbackToOriginal) bytes else byteArrayOf()
             val boxLen = boxSize.toInt()
             if (type !in boxTypes) {
                 out.write(bytes, offset, boxLen)
@@ -1378,7 +1386,7 @@ class AudioTagWriter @Inject constructor(
         if (offset == bytes.size) {
             return out.toByteArray()
         }
-        return bytes
+        return if (fallbackToOriginal) bytes else byteArrayOf()
     }
 
     private fun patchMp4ChunkOffsets(

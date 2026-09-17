@@ -1,9 +1,6 @@
 package com.lastwave.app.data.playlist
 
-import com.lastwave.app.data.music.InnerTubeMusicApi
 import com.lastwave.app.data.music.YouTubeMusicTrack
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -11,7 +8,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CsvPlaylistImporterTest {
-    private val api = mockk<InnerTubeMusicApi>()
+    private val mockTracks = mutableListOf<YouTubeMusicTrack>()
+    private val api = object : CsvPlaylistSearchEngine {
+        override suspend fun searchSongs(
+            query: String,
+            limit: Int,
+            prefetchStreams: Boolean,
+        ): List<YouTubeMusicTrack> = mockTracks
+    }
     private val importer = CsvPlaylistImporter(api)
 
     @Test
@@ -64,9 +68,12 @@ class CsvPlaylistImporterTest {
 
     @Test
     fun skipsUnmatchedRowsAndPinsVerifiedVideoId() = runBlocking {
-        coEvery { api.searchSongs(any(), 30, false) } returns listOf(
-            YouTubeMusicTrack("abcdefghijk", "Song", "Artist Tribute"),
-            YouTubeMusicTrack("12345678901", "Song", "Artist"),
+        mockTracks.clear()
+        mockTracks.addAll(
+            listOf(
+                YouTubeMusicTrack("abcdefghijk", "Song", "Artist Tribute"),
+                YouTubeMusicTrack("12345678901", "Song", "Artist"),
+            )
         )
         val result = importer.parseAndMatchCsv("Track,Artist\nSong,Artist\nMissing,Artist".byteInputStream(), "songs.csv")
         assertEquals(2, result.totalRows)

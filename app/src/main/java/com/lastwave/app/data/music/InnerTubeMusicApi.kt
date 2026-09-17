@@ -1,6 +1,7 @@
 package com.lastwave.app.data.music
 
 import android.net.Uri
+import com.lastwave.app.data.playlist.CsvPlaylistSearchEngine
 import com.lastwave.app.data.music.potoken.BotGuardTokenGenerator
 import com.lastwave.app.data.ytmusic.YtMusicAuthManager
 import com.lastwave.app.data.ytmusic.YtConnection
@@ -159,7 +160,7 @@ class InnerTubeMusicApi @Inject constructor(
     private val streamExtractor: YouTubeStreamExtractor,
     private val innerTubeXExtractor: InnerTubeXStreamExtractor,
     private val ytAuth: YtMusicAuthManager,
-) {
+) : CsvPlaylistSearchEngine {
     private val json = Json { ignoreUnknownKeys = true }
     private val configMutex = Mutex()
     private val matchCache = ConcurrentHashMap<String, YouTubeMusicTrack>()
@@ -989,10 +990,10 @@ class InnerTubeMusicApi @Inject constructor(
         return findString(renderer, "setVideoId") ?: findString(renderer, "playlistSetVideoId")
     }
 
-    suspend fun searchSongs(
+    override suspend fun searchSongs(
         query: String,
-        limit: Int = 30,
-        prefetchStreams: Boolean = true,
+        limit: Int,
+        prefetchStreams: Boolean,
     ): List<YouTubeMusicTrack> = withContext(Dispatchers.IO) {
         if (query.isBlank()) return@withContext emptyList()
         val config = getWebConfig()
@@ -1456,7 +1457,7 @@ class InnerTubeMusicApi @Inject constructor(
     }
 
     /** Fetches rich metadata (title, artist, album, artwork) for a single YouTube video ID */
-    suspend fun fetchSongDetails(videoId: String): YouTubeMusicTrack? = withContext(Dispatchers.IO) {
+    override suspend fun fetchSongDetails(videoId: String): YouTubeMusicTrack? = withContext(Dispatchers.IO) {
         if (videoId.isBlank()) return@withContext null
 
         // 1. Try InnerTube /player or /next (returns exact artist, title, album, artwork from YouTube Music)

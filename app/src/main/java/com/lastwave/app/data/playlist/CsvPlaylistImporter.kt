@@ -32,10 +32,21 @@ data class CsvImportResult(
     val tracks: List<GeneratedTrack>,
 )
 
+interface CsvPlaylistSearchEngine {
+    suspend fun fetchSongDetails(videoId: String): YouTubeMusicTrack? = null
+    suspend fun searchSongs(
+        query: String,
+        limit: Int = 30,
+        prefetchStreams: Boolean = true,
+    ): List<YouTubeMusicTrack> = emptyList()
+}
+
 @Singleton
-class CsvPlaylistImporter @Inject constructor(
-    private val innerTube: InnerTubeMusicApi,
+class CsvPlaylistImporter(
+    private val innerTube: CsvPlaylistSearchEngine,
 ) {
+    @Inject
+    constructor(innerTube: InnerTubeMusicApi) : this(innerTube as CsvPlaylistSearchEngine)
     suspend fun parseAndMatchCsv(
         inputStream: InputStream,
         filename: String = "Imported Playlist",
@@ -136,7 +147,8 @@ class CsvPlaylistImporter @Inject constructor(
             return parseM3u(text.lineSequence().map(String::trim).toList())
         }
         if (filename.endsWith(".txt", true) && lines.none { '\t' in it } &&
-            lines.first().split(',', ';').map(::normalize).none { it in TITLE_HEADERS || it in ARTIST_HEADERS || it in URL_HEADERS }) {
+            (Regex("\\s+[-–—]\\s+").containsMatchIn(lines.first()) ||
+             lines.first().split(',', ';').map(::normalize).none { it in TITLE_HEADERS })) {
             return lines.map(::parseTextTrack)
         }
         val delimiter = listOf(',', ';', '\t').maxBy { candidate ->

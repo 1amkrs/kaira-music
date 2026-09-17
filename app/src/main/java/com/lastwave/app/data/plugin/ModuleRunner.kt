@@ -148,7 +148,7 @@ class ModuleRunner @Inject constructor(
         val pooled = engines.getOrPut(handle.id) {
             PooledEngine(
                 QuickJs.create(Dispatchers.IO).apply {
-                    maxEvalTimeMs = EVAL_TIMEOUT_MS
+                    evaluationTimeoutMillis = EVAL_TIMEOUT_MS
                 },
             )
         }

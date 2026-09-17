@@ -1,0 +1,8 @@
+{
+  "name": "Kaira Music",
+  "description": "High-Resolution Lossless Music Player & Web Audio DSP with Real-Time Synced Lyrics",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
