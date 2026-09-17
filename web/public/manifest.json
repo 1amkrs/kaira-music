@@ -1,6 +1,6 @@
 {
-  "name": "LastWave Hi-Res Audio",
-  "short_name": "LastWave",
+  "name": "Kaira Music",
+  "short_name": "Kaira",
   "description": "High-Resolution Lossless Music Streaming & Web Audio Player with Real-Time Synced Lyrics & DSP",
   "start_url": "/",
   "display": "standalone",

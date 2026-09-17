@@ -61,7 +61,7 @@ export const SplashLoadScreen: React.FC = () => {
         <div className="relative flex items-center justify-center">
           <div className="absolute w-24 h-24 rounded-full bg-[#E2A9B0]/20 blur-xl animate-ping" />
           <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#2D2228] to-[#1C161A] border border-white/10 shadow-2xl flex items-center justify-center relative z-10">
-            {/* LastWave Dynamic Animated Audio Bars */}
+            {/* Kaira Dynamic Animated Audio Bars */}
             <div className="flex items-end gap-1.5 h-8">
               <span className="w-1.5 bg-[#E2A9B0] rounded-full animate-[bounce_1s_infinite_100ms] h-4" />
               <span className="w-1.5 bg-[#BAC6D7] rounded-full animate-[bounce_1s_infinite_250ms] h-8" />
@@ -74,7 +74,7 @@ export const SplashLoadScreen: React.FC = () => {
         {/* Brand Heading strictly in font-bold font-sequel */}
         <div className="space-y-1.5">
           <h1 className="text-3xl sm:text-4xl font-bold font-sequel tracking-tight text-[#EDE0E2]">
-            LastWave
+            Kaira Music
           </h1>
           <p className="text-xs tracking-widest text-[#E5B6BD] uppercase font-semibold">
             Studio Master High-Fidelity

@@ -1,4 +1,4 @@
-name: Deploy LastWave Web to GitHub Pages
+name: Deploy Kaira Music Web
 
 on:
   push:

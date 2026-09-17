@@ -1,4 +1,4 @@
-# LastWave Web / PWA (v4.1.0)
+# Kaira Music Web / PWA (v4.1.0)
 
 **High-Resolution Lossless Music Streaming & Web Audio Player with Web DSP, Bauer Binaural Crossfeed, LRCLIB Synced Lyrics, and Material 3 Expressive UI.**
 

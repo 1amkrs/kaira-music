@@ -93,7 +93,7 @@ export class MediaSessionController {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title,
         artist: track.artist,
-        album: track.album || 'LastWave Hi-Res',
+        album: track.album || 'Kaira Music Hi-Res',
         artwork: artworkList,
       });
     } catch (e) {

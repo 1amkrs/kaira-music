@@ -290,7 +290,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
               <span className="text-[11px] uppercase tracking-widest text-[#9E9094] font-semibold">
                 Now Playing
               </span>
-              <span className="text-sm font-medium text-[#EDE0E2]">LastWave</span>
+              <span className="text-sm font-medium text-[#EDE0E2]">Kaira Music</span>
             </div>
 
             <div className="flex items-center gap-2">

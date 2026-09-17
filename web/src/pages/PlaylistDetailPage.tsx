@@ -103,7 +103,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
     if (navigator.share) {
       navigator.share({
         title,
-        text: `Listen to ${title} on LastWave Hi-Res`,
+        text: `Listen to ${title} on Kaira Music`,
         url: window.location.href,
       }).catch(() => {});
     } else {

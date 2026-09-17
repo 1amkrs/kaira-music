@@ -75,7 +75,7 @@ export class LrclibApiClient {
 
       const res = await fetch(`${this.baseUrl}/get?${params.toString()}`, {
         headers: {
-          'User-Agent': 'LastWave-Web/4.1.0 (https://github.com/duxtami/LastWave-native)',
+          'User-Agent': 'Kaira-Music-Web/4.1.0 (https://github.com/duxtami/LastWave-native)',
         },
       });
 

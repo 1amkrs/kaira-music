@@ -533,7 +533,7 @@ export class MusicService {
       artworkUrl,
       followers: known?.followers || '2.8M',
       genres: known?.genres || ['Alternative', 'Pop'],
-      bio: known?.bio || `${trimmed} is an acclaimed recording artist streaming in studio master fidelity on LastWave.`,
+      bio: known?.bio || `${trimmed} is an acclaimed recording artist streaming in studio master fidelity on Kaira Music.`,
       popularTracks,
       albums,
     };

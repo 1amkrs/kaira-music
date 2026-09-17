@@ -187,7 +187,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
               <Waves size={22} className="stroke-[2.5]" />
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#E2A9B0] uppercase tracking-wider">LastWave Native</span>
+              <span className="text-xs font-semibold text-[#E2A9B0] uppercase tracking-wider">Kaira Music</span>
               <p className="text-[11px] text-[#9E9094]">High-Fidelity Audio Experience</p>
             </div>
           </div>

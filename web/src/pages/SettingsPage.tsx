@@ -384,7 +384,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
 
   const handleClearAllData = () => {
     localStorage.clear();
-    alert('All saved LastWave data wiped. Reloading...');
+    alert('All saved Kaira Music data wiped. Reloading...');
     window.location.reload();
   };
 
@@ -1253,7 +1253,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
           </div>
 
           <h2 className="text-3xl font-bold text-[#EDE0E2] tracking-tight mt-4">
-            LastWave
+            Kaira Music
           </h2>
 
           <div className="mt-2.5 px-5 py-1.5 rounded-full bg-[#543339] text-[#E8B8B8] text-sm font-semibold">
@@ -1269,7 +1269,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
         <div className="bg-[#211B1E] rounded-[28px] p-2 divide-y divide-white/[0.04] shadow-sm mt-3">
           {/* Row 1: Check for Updates */}
           <div
-            onClick={() => alert('LastWave is up to date (v4.1.0).')}
+            onClick={() => alert('Kaira Music is up to date (v4.1.0).')}
             className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/[0.03] cursor-pointer transition-colors"
           >
             <div className="flex items-center gap-3.5 min-w-0">
@@ -1507,7 +1507,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
             {lastFmTab === 'web' && (
               <div className="space-y-4 pt-1">
                 <p className="text-xs text-[#EDE0E2]/80 leading-relaxed">
-                  Authorize LastWave securely on the official Last.fm website. You will be redirected to grant scrobbling permissions and automatically returned.
+                  Authorize Kaira Music securely on the official Last.fm website. You will be redirected to grant scrobbling permissions and automatically returned.
                 </p>
 
                 <div className="p-3.5 rounded-2xl bg-[#181316] border border-white/5 space-y-1.5 text-xs text-[#9E9094]">
@@ -1543,7 +1543,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
             {lastFmTab === 'mobile' && (
               <form onSubmit={handleMobileAuth} className="space-y-3 pt-1">
                 <p className="text-xs text-[#EDE0E2]/80 leading-relaxed">
-                  Sign in directly with your Last.fm credentials. LastWave obtains a persistent scrobbling session and discards your password immediately.
+                  Sign in directly with your Last.fm credentials. Kaira Music obtains a persistent scrobbling session and discards your password immediately.
                 </p>
 
                 <div>
@@ -1629,7 +1629,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
                       type="text"
                       value={tempApiKey}
                       onChange={(e) => setTempApiKey(e.target.value)}
-                      placeholder="Default LastWave key used if blank"
+                      placeholder="Default Kaira Music key used if blank"
                       className="w-full bg-[#181316] border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-[#E2A9B0]"
                     />
                   </div>
@@ -1819,7 +1819,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
                     <li>Under <span className="text-white font-medium">Request Headers</span>, copy the entire <span className="text-white font-medium">cookie</span> value and paste below.</li>
                   </ol>
                   <p className="text-[11px] text-[#9E9094]/80">
-                    LastWave computes the RFC 3174 SHA-1 <span className="text-[#EDE0E2]">SAPISIDHASH</span> token locally in memory. Your cookies remain private on this device.
+                    Kaira Music computes the RFC 3174 SHA-1 <span className="text-[#EDE0E2]">SAPISIDHASH</span> token locally in memory. Your cookies remain private on this device.
                   </p>
                 </div>
 

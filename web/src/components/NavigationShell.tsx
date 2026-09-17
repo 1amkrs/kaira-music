@@ -44,7 +44,7 @@ export const NavigationShell: React.FC<NavigationShellProps> = ({
             <span className="w-1 h-4 bg-[#080C12] rounded-full" />
           </div>
           <div>
-            <h1 className="text-xl font-bold font-sequel tracking-tight text-white">LastWave</h1>
+            <h1 className="text-xl font-bold font-sequel tracking-tight text-white">Kaira Music</h1>
             <span className="text-[10px] uppercase font-semibold tracking-widest text-[#9E9094]">
               Lossless Web Audio
             </span>
