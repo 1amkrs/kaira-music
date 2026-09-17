@@ -251,13 +251,22 @@ export class WebAudioEngine {
     this.audio.pause();
     this.activeEngine = 'youtube';
 
-    const videoId = track.youtubeId || (await musicService.resolveYouTubeId(track));
+    let candidates = await musicService.resolveYouTubeCandidates(track);
+    if (track.youtubeId && !candidates.includes(track.youtubeId)) {
+      candidates = [track.youtubeId, ...candidates];
+    }
+
+    const videoId = candidates[0];
+    const fallbackIds = candidates.slice(1);
+
     if (videoId) {
       track.youtubeId = videoId;
-      await this.youtubeBridge.loadAndPlay(videoId);
+      await this.youtubeBridge.loadAndPlay(videoId, fallbackIds);
     } else {
       // Ultimate fallback: direct HTML5 stream
-      console.warn('No YouTube ID resolved, falling back to direct HTML5 audio');
+      console.warn(
+        `[WebAudioEngine] No full-length YouTube stream resolved for "${track.title}" by ${track.artist}. Falling back to preview audio.`
+      );
       this.activeEngine = 'html5';
       this.audio.src = streamUrl;
       this.audio.load();

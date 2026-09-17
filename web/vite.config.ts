@@ -10,6 +10,7 @@ function youtubeSearchPlugin(): Plugin {
         const parsedUrl = new URL(url, 'http://localhost');
         const q = parsedUrl.searchParams.get('q') || '';
         if (!q.trim()) {
+          res.setHeader('Access-Control-Allow-Origin', '*');
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ videoId: null, videoIds: [] }));
           return;
@@ -37,13 +38,14 @@ function youtubeSearchPlugin(): Plugin {
         );
 
         if (!ytRes.ok) {
+          res.setHeader('Access-Control-Allow-Origin', '*');
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ videoId: null, videoIds: [] }));
           return;
         }
 
         const text = await ytRes.text();
-        const matches = [...text.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)];
+        const matches = [...text.matchAll(/"videoId"\s*:\s*"([a-zA-Z0-9_-]{11})"/g)];
         const uniqueIds: string[] = [];
         for (const match of matches) {
           const id = match[1];
@@ -52,6 +54,7 @@ function youtubeSearchPlugin(): Plugin {
           }
         }
 
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Content-Type', 'application/json');
         res.end(
           JSON.stringify({
@@ -60,6 +63,7 @@ function youtubeSearchPlugin(): Plugin {
           })
         );
       } catch (err) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({ videoId: null, videoIds: [] }));
       }

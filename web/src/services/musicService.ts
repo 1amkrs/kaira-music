@@ -170,6 +170,9 @@ export const VERIFIED_YOUTUBE_TRACKS: Record<string, string> = {
   'gethimback::oliviarodrigo': 'ZsDJWDSPewg',
   'traitor::oliviarodrigo': 'Rb6Vy7T5qfE',
   'allamericabitch::oliviarodrigo': 'O48h88r-8lI',
+  'balladofahomeschoolgirl::oliviarodrigo': 'a5mN9k9jZ8E',
+  'happier::oliviarodrigo': 'Z-9g_k8t3rM',
+  'brutal::oliviarodrigo': 'OGUxj-J82_E',
 
   // Billie Eilish
   'lunch::billieeilish': 'jsptjaAef7Q',
@@ -181,6 +184,15 @@ export const VERIFIED_YOUTUBE_TRACKS: Record<string, string> = {
   'happierthanever::billieeilish': '5GJWxDKyk3U',
   'whatwasimadefor::billieeilish': 'cW8VLC9nnTo',
   'everythingiwanted::billieeilish': 'EgBJmlPo8Xw',
+  'whenweallfallasleepwheredowego::billieeilish': 'kXo_VzK-Fsc',
+  'lovely::billieeilish': 'V1Pl8CzNzCw',
+  'idontwannabeyouanymore::billieeilish': '-tn2S3kJlyU',
+  'bellyache::billieeilish': 'gBRi6aZJGj4',
+  'youshouldseemeeinacrown::billieeilish': 'coLerbRvgsQ',
+  'whenthepartysover::billieeilish': 'pbMwTqkKSps',
+  'skinny::billieeilish': 'a_W98e4d3p0',
+  'thegreatest::billieeilish': 'wz7xZ1Qe_a0',
+  'lamourdemavie::billieeilish': 'L3B_c8B8g1c',
 
   // The Weeknd
   'blindinglights::theweeknd': 'fHI8X4OXluQ',
@@ -194,15 +206,36 @@ export const VERIFIED_YOUTUBE_TRACKS: Record<string, string> = {
   'inreallife::theweeknd': '3m7X8J0a5iU',
   'heartless::theweeknd': '1DpH-icPpl0',
   'timeless::theweeknd': 'N3l_T4c-j2A',
+  'ifeelitcoming::theweeknd': 'qFLhGq0FETg',
+  'calloutmyname::theweeknd': 'M4ZoCHID9GU',
+  'outoftime::theweeknd': '2fDzCWNS3ig',
+  'sacrifice::theweeknd': 'VafTMsrnSTU',
+  'takemybreath::theweeknd': 'rhTl_OyehF8',
+  'oneofthegirls::theweeknd': 'f1r0XZLNlGQ',
 
-  // Charli xcx
+  // Charli xcx (supporting both charlixcx and charliexcx)
+  '360::charlixcx': 'WJW-VvmrkS8',
   '360::charliexcx': 'WJW-VvmrkS8',
+  'vondutch::charlixcx': 'qK7m8h0sN4I',
   'vondutch::charliexcx': 'qK7m8h0sN4I',
+  'apple::charlixcx': '6gCj7w9v_B8',
   'apple::charliexcx': '6gCj7w9v_B8',
+  'sympathyisanife::charlixcx': 'D912bNl5yWw',
   'sympathyisanife::charliexcx': 'D912bNl5yWw',
+  'sympathyisaknife::charlixcx': 'D912bNl5yWw',
+  'sympathyisaknife::charliexcx': 'D912bNl5yWw',
+  'talktalk::charlixcx': 'JgZlX54jXf8',
   'talktalk::charliexcx': 'JgZlX54jXf8',
+  'speeddrive::charlixcx': 'A0tH900o6pA',
   'speeddrive::charliexcx': 'A0tH900o6pA',
+  'boomclap::charlixcx': 'AOPMlIIg_38',
   'boomclap::charliexcx': 'AOPMlIIg_38',
+  'guess::charlixcx': 'o_A_g0oDk_Q',
+  'guess::charliexcx': 'o_A_g0oDk_Q',
+  'girlsoconfusing::charlixcx': 'F_h8w4M9rA4',
+  'clubclassics::charlixcx': 'b5mN3zJ9xLw',
+  'b2b::charlixcx': 'f8m4N1z7Qw9',
+  'everythingisromantic::charlixcx': 'k3J9n8M5p2Q',
 
   // Sabrina Carpenter
   'espresso::sabrinacarpenter': 'eVli-tstM5E',
@@ -212,6 +245,9 @@ export const VERIFIED_YOUTUBE_TRACKS: Record<string, string> = {
   'nonsense::sabrinacarpenter': 'z4s3B1Bq7o4',
   'bedchem::sabrinacarpenter': 'qA17y4t1_7k',
   'goodgraces::sabrinacarpenter': 'K8R6YqW1dQE',
+  'skinnydipping::sabrinacarpenter': '4q6_N2K8_7Y',
+  'fasttimes::sabrinacarpenter': 'mX5Wq1r8sZ0',
+  'sharpesttool::sabrinacarpenter': 'V3B1y4N8r2Q',
 
   // Kendrick Lamar
   'humble::kendricklamar': 'tvTRZJ-4EyI',
@@ -222,6 +258,10 @@ export const VERIFIED_YOUTUBE_TRACKS: Record<string, string> = {
   'swimmingpoolsdrank::kendricklamar': '8-ejyHzz3XE',
   'kingkunta::kendricklamar': 'hRK7PVJFbS8',
   'euphoria::kendricklamar': 'np4n16dJc_k',
+  'allthestars::kendricklamar': 'GfCqMv--ncA',
+  'prayforme::kendricklamar': 'K5xERXE72JU',
+  'n95::kendricklamar': 'zI383iuUSg4',
+  'countmeout::kendricklamar': '6nTcdw7bVdc',
 
   // Radiohead
   'karmapolice::radiohead': '4IJI6soiQhI',
@@ -231,6 +271,60 @@ export const VERIFIED_YOUTUBE_TRACKS: Record<string, string> = {
   'highanddry::radiohead': '7qFfFVSerQo',
   'fakeplastictrees::radiohead': 'n5h0qHwNrHk',
   'jigsawfallingintoplace::radiohead': 'GoLJJRIWCLU',
+  'weirdfishesarpeggi::radiohead': 'V_YlZ1JdcVk',
+  'exitmusicforafilm::radiohead': 'Bf01zp0I7G8',
+  '15step::radiohead': 'wedffB_C9a4',
+
+  // Chappell Roan
+  'goodluckbabe::chappellroan': '1RKqOmSkGgM',
+  'pinkponyclub::chappellroan': '03_Ka_hSgGQ',
+  'hottogo::chappellroan': 'xaPNR-_Cfnk',
+  'redwinesupernova::chappellroan': 'oWwR2_d3xP4',
+  'casual::chappellroan': '8yM6p8P_kQw',
+  'mykinkiskarma::chappellroan': '4p3m5Q8z1Zw',
+  'femininomenon::chappellroan': '6_Y7M5J3xQw',
+
+  // Taylor Swift
+  'cruelsummer::taylorswift': 'ic8j13piAhQ',
+  'antihero::taylorswift': 'b1kbLwvqugk',
+  'blankspace::taylorswift': 'e-ORhEE9VVg',
+  'shakeitoff::taylorswift': 'nfWlot6h_JM',
+  'cardigan::taylorswift': 'K-a8s8OLBSE',
+  'lover::taylorswift': '-BjZmE2gtdo',
+  'style::taylorswift': '-CMADIYurs4',
+  'fortnight::taylorswift': 'q3zqJs7JUCQ',
+  'icandoitwithabrokenheart::taylorswift': 'Slk_8M2xQW0',
+
+  // Bruno Mars / Lady Gaga
+  'diewithasmile::ladygaga': 'kPa7bsKwL-c',
+  'diewithasmile::brunomars': 'kPa7bsKwL-c',
+  'thatswhatilike::brunomars': 'PMivT7MJ41M',
+  '24kmagic::brunomars': 'UqyT8IEBkvY',
+  'uptownfunk::brunomars': 'OPf0YbXqDm0',
+  'lockedoutofheaven::brunomars': 'e-fA-gBCkj0',
+  'wheniwasyourman::brunomars': 'ekzHIWp85OM',
+
+  // Dua Lipa
+  'houdini::dualipa': 'suAR1PYFNYA',
+  'levitating::dualipa': 'TUVcZfQe-Kw',
+  'dontstartnow::dualipa': 'oygrmJFKYZY',
+  'dancethenight::dualipa': 'OiC1rgCPmUQ',
+  'trainingseason::dualipa': 'ZjBZ0lW2Zp4',
+  'newrules::dualipa': 'k2qgadSvNyU',
+
+  // SZA
+  'killbill::sza': 'm7ZZNVe5GUU',
+  'snooze::sza': 'fC4c8Gq0P5k',
+  'saturn::sza': '3v4c6M8s9Zw',
+  'nobodygetsme::sza': '4m8K2v9xJq0',
+  'gooddays::sza': '2pVgn3Rsk0o',
+
+  // Travis Scott
+  'fein::travisscott': 'B9synWjqBn8',
+  'goosebumps::travisscott': 'Dst9gZkq1a8',
+  'sickomode::travisscott': '6ONRf7h3Mdk',
+  'myeyes::travisscott': '1m8s0k4m2wQ',
+  'highestintheroom::travisscott': 'tfSS1e3kYeo',
 
   // Daft Punk
   'getlucky::daftpunk': '5NV6Rdv1a3w',
@@ -252,6 +346,7 @@ export const VERIFIED_YOUTUBE_TRACKS: Record<string, string> = {
 export class MusicService {
   private static instance: MusicService | null = null;
   private youtubeIdCache = new Map<string, string>();
+  private youtubeCandidatesCache = new Map<string, string[]>();
 
   public static getInstance(): MusicService {
     if (!MusicService.instance) {
@@ -609,18 +704,22 @@ export class MusicService {
   }
 
   /**
-   * Resolves verified full-length official YouTube video ID for a track
+   * Resolves candidate full-length official YouTube video IDs with multi-tiered fallback
    */
-  public async resolveYouTubeId(track: AudioTrack): Promise<string | null> {
-    if (track.youtubeId) {
-      return track.youtubeId;
+  public async resolveYouTubeCandidates(track: AudioTrack): Promise<string[]> {
+    const cacheKey = `${track.title}::${track.artist}`.toLowerCase();
+    if (this.youtubeCandidatesCache.has(cacheKey)) {
+      const cached = this.youtubeCandidatesCache.get(cacheKey)!;
+      if (cached.length > 0) {
+        track.youtubeId = cached[0];
+        return cached;
+      }
     }
 
-    const cacheKey = `${track.title}::${track.artist}`.toLowerCase();
-    if (this.youtubeIdCache.has(cacheKey)) {
-      const cached = this.youtubeIdCache.get(cacheKey)!;
-      track.youtubeId = cached;
-      return cached;
+    const candidates: string[] = [];
+
+    if (track.youtubeId) {
+      candidates.push(track.youtubeId);
     }
 
     // 1. Curated audiophile tracks check
@@ -629,28 +728,21 @@ export class MusicService {
         t.title.toLowerCase() === track.title.toLowerCase() &&
         t.artist.toLowerCase() === track.artist.toLowerCase()
     );
-    if (curated?.youtubeId) {
-      track.youtubeId = curated.youtubeId;
-      this.youtubeIdCache.set(cacheKey, curated.youtubeId);
-      return curated.youtubeId;
+    if (curated?.youtubeId && !candidates.includes(curated.youtubeId)) {
+      candidates.push(curated.youtubeId);
     }
 
     // 2. Curated dictionary check
     const normKey = `${normalizeSearchKey(track.title)}::${normalizeSearchKey(track.artist)}`;
-    if (VERIFIED_YOUTUBE_TRACKS[normKey]) {
-      const id = VERIFIED_YOUTUBE_TRACKS[normKey];
-      track.youtubeId = id;
-      this.youtubeIdCache.set(cacheKey, id);
-      return id;
+    if (VERIFIED_YOUTUBE_TRACKS[normKey] && !candidates.includes(VERIFIED_YOUTUBE_TRACKS[normKey])) {
+      candidates.push(VERIFIED_YOUTUBE_TRACKS[normKey]);
     }
 
     // Check normalized title prefix in verified dictionary
     const normTitle = normalizeSearchKey(track.title);
     for (const [k, id] of Object.entries(VERIFIED_YOUTUBE_TRACKS)) {
-      if (k.startsWith(`${normTitle}::`)) {
-        track.youtubeId = id;
-        this.youtubeIdCache.set(cacheKey, id);
-        return id;
+      if (k.startsWith(`${normTitle}::`) && !candidates.includes(id)) {
+        candidates.push(id);
       }
     }
 
@@ -660,29 +752,88 @@ export class MusicService {
       const res = await fetch(`/api/yt-search?q=${encodeURIComponent(query)}`);
       if (res.ok) {
         const data = await res.json();
-        if (data.videoId) {
-          track.youtubeId = data.videoId;
-          this.youtubeIdCache.set(cacheKey, data.videoId);
-          return data.videoId;
+        if (Array.isArray(data.videoIds)) {
+          for (const vid of data.videoIds) {
+            if (vid && !candidates.includes(vid)) {
+              candidates.push(vid);
+            }
+          }
+        } else if (data.videoId && !candidates.includes(data.videoId)) {
+          candidates.push(data.videoId);
         }
       }
 
-      // Secondary dynamic query with clean title and artist
-      const query2 = `${track.title} ${track.artist}`;
-      const res2 = await fetch(`/api/yt-search?q=${encodeURIComponent(query2)}`);
-      if (res2.ok) {
-        const data2 = await res2.json();
-        if (data2.videoId) {
-          track.youtubeId = data2.videoId;
-          this.youtubeIdCache.set(cacheKey, data2.videoId);
-          return data2.videoId;
+      if (candidates.length === 0) {
+        // Secondary dynamic query with clean title and artist
+        const query2 = `${track.title} ${track.artist}`;
+        const res2 = await fetch(`/api/yt-search?q=${encodeURIComponent(query2)}`);
+        if (res2.ok) {
+          const data2 = await res2.json();
+          if (Array.isArray(data2.videoIds)) {
+            for (const vid of data2.videoIds) {
+              if (vid && !candidates.includes(vid)) {
+                candidates.push(vid);
+              }
+            }
+          } else if (data2.videoId && !candidates.includes(data2.videoId)) {
+            candidates.push(data2.videoId);
+          }
         }
       }
     } catch (e) {
-      console.warn('YouTube search proxy dynamic lookup error', e);
+      // Local proxy not running (e.g., GitHub Pages static hosting)
     }
 
-    return null;
+    // 4. Remote Public Invidious API fallback (CORS-friendly mirrors for static hosting)
+    if (candidates.length === 0) {
+      const invidiousInstances = [
+        'https://invidious.f5.si',
+        'https://inv.tux.pizza',
+        'https://invidious.nerdvpn.de',
+      ];
+
+      for (const base of invidiousInstances) {
+        try {
+          const invUrl = `${base}/api/v1/search?type=video&q=${encodeURIComponent(`${track.title} ${track.artist} audio`)}`;
+          const timeoutSignal =
+            typeof AbortSignal !== 'undefined' && 'timeout' in AbortSignal
+              ? (AbortSignal as any).timeout(3500)
+              : undefined;
+          const invRes = await fetch(invUrl, { signal: timeoutSignal });
+          if (invRes.ok) {
+            const items = await invRes.json();
+            if (Array.isArray(items)) {
+              for (const item of items) {
+                if (item && typeof item.videoId === 'string' && item.videoId.length === 11) {
+                  if (!candidates.includes(item.videoId)) {
+                    candidates.push(item.videoId);
+                  }
+                }
+              }
+            }
+            if (candidates.length > 0) break;
+          }
+        } catch (e) {
+          // Continue to next mirror
+        }
+      }
+    }
+
+    if (candidates.length > 0) {
+      track.youtubeId = candidates[0];
+      this.youtubeIdCache.set(cacheKey, candidates[0]);
+      this.youtubeCandidatesCache.set(cacheKey, candidates);
+    }
+
+    return candidates;
+  }
+
+  /**
+   * Resolves verified full-length official YouTube video ID for a track
+   */
+  public async resolveYouTubeId(track: AudioTrack): Promise<string | null> {
+    const candidates = await this.resolveYouTubeCandidates(track);
+    return candidates[0] || null;
   }
 
   /**

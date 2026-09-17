@@ -31,6 +31,7 @@ export class YouTubeAudioBridge {
   private lastDuration: number = 0;
   private listeners: ((event: PlaybackEvent) => void)[] = [];
   private pendingPlayVideoId: { videoId: string; startSeconds?: number } | null = null;
+  private fallbackVideoIds: string[] = [];
 
   private constructor() {}
 
@@ -134,6 +135,22 @@ export class YouTubeAudioBridge {
           },
           onError: (event: any) => {
             const errCode = event.data;
+            console.warn(
+              `[YouTubeAudioBridge] Player encountered code ${errCode} on video "${this.currentVideoId}".`
+            );
+
+            // Check if alternate fallback video candidates are available (e.g., error 101/150 embed restricted, or blocked)
+            if (this.fallbackVideoIds.length > 0) {
+              const nextId = this.fallbackVideoIds.shift()!;
+              console.warn(
+                `[YouTubeAudioBridge] Automatically recovering with alternate video candidate: "${nextId}". (${this.fallbackVideoIds.length} remaining)`
+              );
+              this.loadAndPlay(nextId, this.fallbackVideoIds, this.getCurrentTime()).catch((err) => {
+                console.error('[YouTubeAudioBridge] Failed to play fallback video candidate', err);
+              });
+              return;
+            }
+
             const errMsg = `YouTube Player error code: ${errCode}`;
             console.error(errMsg);
             this.dispatch({ type: 'error', message: errMsg });
@@ -223,7 +240,12 @@ export class YouTubeAudioBridge {
   /**
    * Load and immediately play a YouTube video track in full length
    */
-  public async loadAndPlay(videoId: string, startSeconds: number = 0): Promise<void> {
+  public async loadAndPlay(
+    videoId: string,
+    fallbackIds: string[] = [],
+    startSeconds: number = 0
+  ): Promise<void> {
+    this.fallbackVideoIds = fallbackIds ? fallbackIds.filter((id) => id && id !== videoId) : [];
     this.pendingPlayVideoId = { videoId, startSeconds };
 
     if (!this.player || !this.isReady) {
