@@ -52,3 +52,7 @@ keystore_credentials.txt
 *.env
 .wrangler/
 
+# Web Application
+web/node_modules/
+web/dist/
+web/dist-ssr/
