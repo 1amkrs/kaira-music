@@ -18,6 +18,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { useSettingsStore, AccentColor } from '../store/useSettingsStore';
+import { getAccentSwatches } from '../theme/accentThemes';
 import { useLibraryStore } from '../store/useLibraryStore';
 import { AudioQuality } from '../audio/types';
 import { Material3Switch } from './Material3Switch';
@@ -39,6 +40,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
   const setPreferredQuality = useSettingsStore((s) => s.setPreferredQuality);
   const accentTheme = useSettingsStore((s) => s.accentTheme);
   const setAccentTheme = useSettingsStore((s) => s.setAccentTheme);
+  const customAccentColor = useSettingsStore((s) => s.customAccentColor);
+  const setCustomAccentColor = useSettingsStore((s) => s.setCustomAccentColor);
   const amoledMode = useSettingsStore((s) => s.amoledMode);
   const setAmoledMode = useSettingsStore((s) => s.setAmoledMode);
   const wavySeekbar = useSettingsStore((s) => s.wavySeekbar);
@@ -63,6 +66,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
   const [isConnectingLastFm, setIsConnectingLastFm] = useState(false);
   const [restoreFeedback, setRestoreFeedback] = useState<string>('');
   const backupInputRef = useRef<HTMLInputElement>(null);
+  const customColorInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
@@ -154,16 +158,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
   };
 
   // Swatch data for 8 Accent themes
-  const accentSwatches: { id: AccentColor; name: string; colors: string[] }[] = [
-    { id: 'crimson', name: 'Crimson', colors: ['#B3261E', '#E06D67', '#F2B8B5', '#8C1D18'] },
-    { id: 'violet', name: 'Violet', colors: ['#6750A4', '#9A82DB', '#CCC2DC', '#4F378B'] },
-    { id: 'ocean', name: 'Ocean', colors: ['#00639B', '#4EA8DE', '#90E0EF', '#004A77'] },
-    { id: 'sage', name: 'Sage', colors: ['#386A20', '#6BAE45', '#B6DF97', '#254E10'] },
-    { id: 'amber', name: 'Amber', colors: ['#7A5900', '#D4A017', '#FFDF99', '#5B4300'] },
-    { id: 'rose', name: 'Rose', colors: ['#8C384D', '#E2A9B0', '#F9D8DE', '#6A2335'] },
-    { id: 'mono', name: 'Mono', colors: ['#2E2E2E', '#5C5C5C', '#A8A8A8', '#E6E6E6'] },
-    { id: 'custom', name: 'Custom', colors: ['#FF595E', '#FFCA3A', '#8AC926', '#1982C4'] },
-  ];
+  const accentSwatches = getAccentSwatches(customAccentColor);
 
   const qualityTiers: { id: AudioQuality; title: string; desc: string; badge: string }[] = [
     { id: 'HI_RES_192', title: 'Max 192 kHz', desc: 'Up to 24-bit / 192 kHz FLAC master', badge: 'Audiophile' },
@@ -430,9 +425,21 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
 
               {/* 8-Theme Swatch Picker */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-[#E2A9B0] uppercase tracking-wider">
+                <label className="block text-xs font-bold text-accent uppercase tracking-wider">
                   Accent Color Theme ({accentTheme})
                 </label>
+                {/* Hidden native color input */}
+                <input
+                  ref={customColorInputRef}
+                  type="color"
+                  value={customAccentColor}
+                  onChange={(e) => {
+                    setCustomAccentColor(e.target.value);
+                    setAccentTheme('custom');
+                  }}
+                  className="sr-only opacity-0 pointer-events-none absolute"
+                  aria-label="Custom accent color picker"
+                />
                 <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
                   {accentSwatches.map((swatch) => {
                     const isSelected = accentTheme === swatch.id;
@@ -440,31 +447,75 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
                       <button
                         key={swatch.id}
                         type="button"
-                        onClick={() => setAccentTheme(swatch.id)}
+                        onClick={() => {
+                          setAccentTheme(swatch.id);
+                          if (swatch.id === 'custom') {
+                            customColorInputRef.current?.click();
+                          }
+                        }}
                         className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl border transition-all ${
                           isSelected
-                            ? 'bg-white/10 border-white/40 shadow-sm scale-105'
+                            ? 'bg-white/10 border-accent shadow-sm scale-105 ring-2 ring-accent'
                             : 'bg-[#261E23]/60 border-white/5 hover:border-white/20'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-xl overflow-hidden grid grid-cols-2 grid-rows-2 shadow-sm border border-white/10">
-                          <div style={{ backgroundColor: swatch.colors[0] }} />
-                          <div style={{ backgroundColor: swatch.colors[1] }} />
-                          <div style={{ backgroundColor: swatch.colors[2] }} />
-                          <div style={{ backgroundColor: swatch.colors[3] }} />
-                        </div>
+                        {swatch.id === 'custom' ? (
+                          <div
+                            className="w-8 h-8 rounded-xl overflow-hidden shadow-sm border border-white/10 relative flex items-center justify-center"
+                            style={{
+                              background:
+                                'conic-gradient(from 180deg at 50% 50%, #FF595E 0deg, #FFCA3A 72deg, #8AC926 144deg, #1982C4 216deg, #6A4C93 288deg, #FF595E 360deg)',
+                            }}
+                          >
+                            <div
+                              className="w-3.5 h-3.5 rounded-full border border-white/90 shadow flex items-center justify-center"
+                              style={{ backgroundColor: customAccentColor }}
+                            >
+                              <Palette size={8} className="text-white drop-shadow-sm" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 rounded-xl overflow-hidden grid grid-cols-2 grid-rows-2 shadow-sm border border-white/10">
+                            <div style={{ backgroundColor: swatch.colors[0] }} />
+                            <div style={{ backgroundColor: swatch.colors[1] }} />
+                            <div style={{ backgroundColor: swatch.colors[2] }} />
+                            <div style={{ backgroundColor: swatch.colors[3] }} />
+                          </div>
+                        )}
                         <span className="text-[10px] font-semibold text-[#EDE0E2] truncate">{swatch.name}</span>
                       </button>
                     );
                   })}
                 </div>
+
+                {/* Custom Hex Preview Bar */}
+                {accentTheme === 'custom' && (
+                  <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between animate-in fade-in duration-200">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="w-4 h-4 rounded-full border border-white/20 shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: customAccentColor }}
+                      />
+                      <span className="text-[11px] font-semibold text-[#EDE0E2]">
+                        Hex: <span className="text-accent font-bold uppercase">{customAccentColor}</span>
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => customColorInputRef.current?.click()}
+                      className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[#EDE0E2] transition-colors"
+                    >
+                      Choose Color
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Quick Feature Toggles */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div className="bg-[#261E23]/80 border border-white/5 rounded-2xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Moon size={18} className="text-[#E2A9B0]" />
+                    <Moon size={18} className="text-accent" />
                     <div>
                       <h5 className="text-xs font-bold text-white">AMOLED Mode</h5>
                       <p className="text-[10px] text-[#9E9094]">Pure pitch black canvas</p>
@@ -475,7 +526,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
 
                 <div className="bg-[#261E23]/80 border border-white/5 rounded-2xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Waves size={18} className="text-[#E2A9B0]" />
+                    <Waves size={18} className="text-accent" />
                     <div>
                       <h5 className="text-xs font-bold text-white">Wavy Seekbar</h5>
                       <p className="text-[10px] text-[#9E9094]">Animated audio waveform</p>

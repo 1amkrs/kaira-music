@@ -20,6 +20,15 @@ export default {
           border: 'rgba(255, 255, 255, 0.08)',
           glass: 'rgba(16, 21, 34, 0.72)',
         },
+        accent: {
+          DEFAULT: 'var(--color-accent-primary)',
+          primary: 'var(--color-accent-primary)',
+          dark: 'var(--color-accent-primary-dark)',
+          container: 'var(--color-accent-container)',
+          subtle: 'var(--color-accent-container-subtle)',
+          border: 'var(--color-accent-container-border)',
+          onContainer: 'var(--color-accent-on-container)',
+        },
       },
       fontFamily: {
         sans: ['Google Sans', 'Google Sans Text', 'system-ui', '-apple-system', 'sans-serif'],

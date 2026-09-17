@@ -20,6 +20,7 @@ import { useSettingsStore } from './store/useSettingsStore';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { MusicAlbum } from './services/musicService';
 import { SplashLoadScreen } from './components/SplashLoadScreen';
+import { applyAccentTheme } from './theme/accentThemes';
 
 export const App: React.FC = () => {
   // Global desktop keyboard shortcuts
@@ -37,8 +38,14 @@ export const App: React.FC = () => {
   const setHasCompletedOnboarding = useSettingsStore((s) => s.setHasCompletedOnboarding);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(!hasCompletedOnboarding);
 
+  const accentTheme = useSettingsStore((s) => s.accentTheme);
+  const customAccentColor = useSettingsStore((s) => s.customAccentColor);
   const setLastFmConfig = useSettingsStore((s) => s.setLastFmConfig);
   const setLastFmProfile = useSettingsStore((s) => s.setLastFmProfile);
+
+  useEffect(() => {
+    applyAccentTheme(accentTheme, customAccentColor);
+  }, [accentTheme, customAccentColor]);
 
   useEffect(() => {
     if (!hasCompletedOnboarding) {

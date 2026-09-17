@@ -36,6 +36,14 @@ h1, .font-sequel {
   color-scheme: dark;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --color-accent-primary: #E2A9B0;
+  --color-accent-primary-dark: #4A2027;
+  --color-accent-container: #34272C;
+  --color-accent-container-subtle: #261E23;
+  --color-accent-container-border: #543339;
+  --color-accent-on-container: #F9D8DE;
+  --color-accent-glow: rgba(226, 169, 176, 0.35);
+  --color-accent-ambient: rgba(226, 169, 176, 0.12);
 }
 
 body {

@@ -141,7 +141,7 @@ export const WavySeekbar: React.FC<WavySeekbarProps> = ({
           <path
             d={wavyPathD}
             fill="none"
-            stroke="#DDE2EB"
+            stroke="var(--color-accent-primary)"
             strokeWidth={isMini ? 2 : 2.5}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -151,7 +151,7 @@ export const WavySeekbar: React.FC<WavySeekbarProps> = ({
         {/* Circular Draggable Thumb Handle */}
         <div
           style={{ left: `${elapsedWidth}px` }}
-          className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full bg-[#DDE2EB] shadow-md transition-transform pointer-events-none ${
+          className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full bg-accent shadow-[0_0_12px_var(--color-accent-glow)] transition-transform pointer-events-none ${
             isMini ? 'w-3 h-3' : 'w-4 h-4'
           } ${isDragging ? 'scale-125' : 'group-hover:scale-110'}`}
         />

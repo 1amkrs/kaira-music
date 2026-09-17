@@ -44,14 +44,14 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isSubPage = false }) => 
             />
             {isPlaying && (
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                <Activity size={15} className="text-[#E2A9B0] animate-pulse" />
+                <Activity size={15} className="text-accent animate-pulse" />
               </div>
             )}
           </div>
 
           {/* Track Metadata */}
           <div className="flex flex-col min-w-0 pr-2">
-            <h4 className="text-sm font-bold text-white truncate group-hover:text-[#E2A9B0] transition-colors">
+            <h4 className="text-sm font-bold text-white truncate group-hover:text-accent transition-colors">
               {currentTrack.title}
             </h4>
             <span className="text-xs text-[#9E9094] truncate mt-0.5">
@@ -62,19 +62,19 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isSubPage = false }) => 
 
         {/* Action Controls matching native screenshot media_1789555663562.png */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Play / Pause Light Pill Button */}
+          {/* Play / Pause Accent Pill Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               togglePlay();
             }}
-            className="w-11 h-11 rounded-full bg-[#BAC6D7] text-[#1A1E24] flex items-center justify-center font-bold shadow-md hover:bg-white active:scale-95 transition-all"
+            className="w-11 h-11 rounded-full bg-accent text-accent-dark flex items-center justify-center font-bold shadow-md hover:brightness-105 active:scale-95 transition-all"
             title={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? (
-              <Pause size={18} className="fill-[#1A1E24]" />
+              <Pause size={18} className="fill-current" />
             ) : (
-              <Play size={18} className="fill-[#1A1E24] translate-x-0.5" />
+              <Play size={18} className="fill-current translate-x-0.5" />
             )}
           </button>
 
@@ -91,10 +91,10 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isSubPage = false }) => 
           </button>
         </div>
 
-        {/* Micro Progress Bar on Bottom Border (Clean Solid White) */}
+        {/* Micro Progress Bar on Bottom Border (Clean Accent Wave) */}
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10">
           <div
-            className="h-full bg-white/90 transition-all duration-150"
+            className="h-full bg-accent transition-all duration-150"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

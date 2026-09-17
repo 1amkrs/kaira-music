@@ -135,7 +135,7 @@ export const NavigationShell: React.FC<NavigationShellProps> = ({
             {activeTab === 'stats' ? (
               <button
                 onClick={() => onTabChange('stats')}
-                className="bg-[#543339] text-white px-5 py-2.5 rounded-full flex items-center gap-2.5 font-bold text-sm shadow-md transition-all"
+                className="bg-accent-border text-white px-5 py-2.5 rounded-full flex items-center gap-2.5 font-bold text-sm shadow-md transition-all"
               >
                 <BarChart2 size={18} className="stroke-[2.5]" />
                 <span>Stats</span>
@@ -154,7 +154,7 @@ export const NavigationShell: React.FC<NavigationShellProps> = ({
             {activeTab === 'library' ? (
               <button
                 onClick={() => onTabChange('library')}
-                className="bg-[#543339] text-white px-5 py-2.5 rounded-full flex items-center gap-2.5 font-bold text-sm shadow-md transition-all"
+                className="bg-accent-border text-white px-5 py-2.5 rounded-full flex items-center gap-2.5 font-bold text-sm shadow-md transition-all"
               >
                 <ListMusic size={18} className="stroke-[2.5]" />
                 <span>Playlists</span>
@@ -174,10 +174,10 @@ export const NavigationShell: React.FC<NavigationShellProps> = ({
           {activeTab === 'library' && (
             <button
               onClick={() => setIsAiModalOpen(true)}
-              className="pointer-events-auto w-14 h-14 rounded-full bg-[#543339] text-[#E2A9B0] flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all flex-shrink-0 border border-white/10 animate-in zoom-in-95 duration-200"
+              className="pointer-events-auto w-14 h-14 rounded-full bg-accent-border text-accent flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all flex-shrink-0 border border-white/10 animate-in zoom-in-95 duration-200"
               title="AI Smart Mix Generator"
             >
-              <Sparkles size={24} className="fill-[#E2A9B0]/20" />
+              <Sparkles size={24} className="fill-accent/20" />
             </button>
           )}
         </div>

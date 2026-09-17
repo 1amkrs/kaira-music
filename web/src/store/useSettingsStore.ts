@@ -51,15 +51,9 @@ export const EQ_PRESETS: EqPreset[] = [
   },
 ];
 
-export type AccentColor =
-  | 'crimson'
-  | 'violet'
-  | 'ocean'
-  | 'sage'
-  | 'amber'
-  | 'rose'
-  | 'mono'
-  | 'custom';
+import { AccentColor, applyAccentTheme } from '../theme/accentThemes';
+
+export type { AccentColor };
 
 export interface SettingsState {
   // Streaming & Backend
@@ -93,6 +87,7 @@ export interface SettingsState {
   useAppFont: boolean;
   homeSectionsCount: number;
   accentTheme: AccentColor;
+  customAccentColor: string;
 
   // Experimental / Audio Features
   liquidGlass: boolean;
@@ -136,6 +131,7 @@ export interface SettingsState {
   setDynamicNowPlaying: (val: boolean) => void;
   setUseAppFont: (val: boolean) => void;
   setAccentTheme: (theme: AccentColor) => void;
+  setCustomAccentColor: (color: string) => void;
 
   setLiquidGlass: (val: boolean) => void;
   setLyricsAnimation: (val: string) => void;
@@ -170,6 +166,10 @@ const savedDsp = storage.getDspSettings();
 const initialDsp: DspSettings = savedDsp ? { ...defaultDsp, ...savedDsp } : defaultDsp;
 const savedSettings = storage.getSettings() || {};
 
+const initialAccentTheme: AccentColor = savedSettings.accentTheme ?? 'rose';
+const initialCustomAccentColor: string = savedSettings.customAccentColor ?? '#00E5FF';
+applyAccentTheme(initialAccentTheme, initialCustomAccentColor);
+
 if (savedSettings.clashflacUrl) {
   clashflacApi.setConfig(savedSettings.clashflacUrl, savedSettings.clashflacApiKey || '');
 }
@@ -201,7 +201,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   dynamicNowPlaying: savedSettings.dynamicNowPlaying ?? true,
   useAppFont: savedSettings.useAppFont ?? true,
   homeSectionsCount: savedSettings.homeSectionsCount ?? 15,
-  accentTheme: savedSettings.accentTheme ?? 'rose',
+  accentTheme: initialAccentTheme,
+  customAccentColor: initialCustomAccentColor,
 
   liquidGlass: savedSettings.liquidGlass ?? true,
   lyricsAnimation: savedSettings.lyricsAnimation ?? 'New UI (Modern)',
@@ -293,7 +294,14 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   setDynamicColor: (val: boolean) => set({ dynamicColor: val }),
   setDynamicNowPlaying: (val: boolean) => set({ dynamicNowPlaying: val }),
   setUseAppFont: (val: boolean) => set({ useAppFont: val }),
-  setAccentTheme: (theme: AccentColor) => set({ accentTheme: theme }),
+  setAccentTheme: (theme: AccentColor) => {
+    set({ accentTheme: theme });
+    applyAccentTheme(theme, get().customAccentColor);
+  },
+  setCustomAccentColor: (color: string) => {
+    set({ customAccentColor: color });
+    applyAccentTheme(get().accentTheme, color);
+  },
 
   setLiquidGlass: (val: boolean) => set({ liquidGlass: val }),
   setLyricsAnimation: (val: string) => set({ lyricsAnimation: val }),
@@ -392,6 +400,7 @@ useSettingsStore.subscribe((state) => {
     useAppFont: state.useAppFont,
     homeSectionsCount: state.homeSectionsCount,
     accentTheme: state.accentTheme,
+    customAccentColor: state.customAccentColor,
     liquidGlass: state.liquidGlass,
     lyricsAnimation: state.lyricsAnimation,
     wavySeekbar: state.wavySeekbar,

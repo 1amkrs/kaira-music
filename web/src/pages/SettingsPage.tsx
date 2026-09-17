@@ -39,6 +39,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useSettingsStore, AccentColor } from '../store/useSettingsStore';
+import { getAccentSwatches } from '../theme/accentThemes';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { useLibraryStore } from '../store/useLibraryStore';
 import { clashflacApi } from '../services/clashflacApi';
@@ -59,6 +60,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
   const dynamicNowPlaying = useSettingsStore((s) => s.dynamicNowPlaying);
   const useAppFont = useSettingsStore((s) => s.useAppFont);
   const accentTheme = useSettingsStore((s) => s.accentTheme);
+  const customAccentColor = useSettingsStore((s) => s.customAccentColor);
 
   const liquidGlass = useSettingsStore((s) => s.liquidGlass);
   const lyricsAnimation = useSettingsStore((s) => s.lyricsAnimation);
@@ -101,6 +103,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
   const setDynamicNowPlaying = useSettingsStore((s) => s.setDynamicNowPlaying);
   const setUseAppFont = useSettingsStore((s) => s.setUseAppFont);
   const setAccentTheme = useSettingsStore((s) => s.setAccentTheme);
+  const setCustomAccentColor = useSettingsStore((s) => s.setCustomAccentColor);
 
   const setLiquidGlass = useSettingsStore((s) => s.setLiquidGlass);
   const setWavySeekbar = useSettingsStore((s) => s.setWavySeekbar);
@@ -161,6 +164,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
 
   const [isClearDataModalOpen, setIsClearDataModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const customColorInputRef = useRef<HTMLInputElement>(null);
 
   // YouTube Music Modal States
   const [isYtMusicModalOpen, setIsYtMusicModalOpen] = useState(false);
@@ -171,17 +175,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
   const [ytSuccess, setYtSuccess] = useState('');
   const [ytSyncing, setYtSyncing] = useState(false);
 
-  // Swatch data for 8 Accent themes (2x2 color quadrants)
-  const accentSwatches: { id: AccentColor; name: string; colors: string[] }[] = [
-    { id: 'crimson', name: 'Crimson', colors: ['#B3261E', '#E06D67', '#F2B8B5', '#8C1D18'] },
-    { id: 'violet', name: 'Violet', colors: ['#6750A4', '#9A82DB', '#CCC2DC', '#4F378B'] },
-    { id: 'ocean', name: 'Ocean', colors: ['#00639B', '#4EA8DE', '#90E0EF', '#004A77'] },
-    { id: 'sage', name: 'Sage', colors: ['#386A20', '#6BAE45', '#B6DF97', '#254E10'] },
-    { id: 'amber', name: 'Amber', colors: ['#7A5900', '#D4A017', '#FFDF99', '#5B4300'] },
-    { id: 'rose', name: 'Rose', colors: ['#8C384D', '#E2A9B0', '#F9D8DE', '#6A2335'] },
-    { id: 'mono', name: 'Mono', colors: ['#2E2E2E', '#5C5C5C', '#A8A8A8', '#E6E6E6'] },
-    { id: 'custom', name: 'Custom', colors: ['#FF595E', '#FFCA3A', '#8AC926', '#1982C4'] },
-  ];
+  // Swatch data for 8 Accent themes (derived dynamically)
+  const accentSwatches = getAccentSwatches(customAccentColor);
 
   const qualityLabels: Record<AudioQuality, string> = {
     HI_RES_192: 'Max (Up to 24-bit / 192 kHz) • YouTube Music fallback',
@@ -656,29 +651,57 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
 
         {/* 7. Accent Grid (8 Color Swatches) */}
         <div>
-          <h3 className="text-xs font-bold text-[#E5B6BD] px-4 pb-2 uppercase tracking-wider">
+          <h3 className="text-xs font-bold text-accent px-4 pb-2 uppercase tracking-wider">
             Accent
           </h3>
           <div className="bg-[#211B1E] rounded-[28px] p-4 shadow-sm">
+            {/* Hidden native color input */}
+            <input
+              ref={customColorInputRef}
+              type="color"
+              value={customAccentColor}
+              onChange={(e) => {
+                setCustomAccentColor(e.target.value);
+                setAccentTheme('custom');
+              }}
+              className="sr-only opacity-0 pointer-events-none absolute"
+              aria-label="Custom accent color picker"
+            />
             <div className="grid grid-cols-4 gap-3">
               {accentSwatches.map((swatch) => {
                 const isSelected = accentTheme === swatch.id;
                 return (
                   <div
                     key={swatch.id}
-                    onClick={() => setAccentTheme(swatch.id)}
+                    onClick={() => {
+                      setAccentTheme(swatch.id);
+                      if (swatch.id === 'custom') {
+                        customColorInputRef.current?.click();
+                      }
+                    }}
                     className="flex flex-col items-center cursor-pointer group"
                   >
                     <div
                       className={`relative w-full aspect-square rounded-[22px] overflow-hidden p-1.5 transition-all duration-200 ${
                         isSelected
-                          ? 'ring-2 ring-[#E2A9B0] ring-offset-2 ring-offset-[#211B1E] scale-105 shadow-md'
+                          ? 'ring-2 ring-accent ring-offset-2 ring-offset-[#211B1E] scale-105 shadow-md'
                           : 'opacity-80 group-hover:opacity-100 group-hover:scale-102'
                       }`}
                     >
                       {swatch.id === 'custom' ? (
-                        <div className="w-full h-full rounded-[16px] bg-[conic-gradient(at_center,#FF595E,#FFCA3A,#8AC926,#1982C4,#6A4C93,#FF595E)] flex items-center justify-center">
-                          <Palette size={20} className="text-white drop-shadow-md" />
+                        <div
+                          className="w-full h-full rounded-[16px] relative overflow-hidden flex items-center justify-center"
+                          style={{
+                            background:
+                              'conic-gradient(from 180deg at 50% 50%, #FF595E 0deg, #FFCA3A 72deg, #8AC926 144deg, #1982C4 216deg, #6A4C93 288deg, #FF595E 360deg)',
+                          }}
+                        >
+                          <div
+                            className="w-6 h-6 rounded-full border-2 border-white/90 shadow-lg flex items-center justify-center transition-transform group-hover:scale-110"
+                            style={{ backgroundColor: customAccentColor }}
+                          >
+                            <Palette size={12} className="text-white drop-shadow-md" />
+                          </div>
                         </div>
                       ) : (
                         <div className="w-full h-full rounded-[16px] overflow-hidden grid grid-cols-2 grid-rows-2">
@@ -696,6 +719,28 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
                 );
               })}
             </div>
+
+            {/* Interactive Custom Hex Bar */}
+            {accentTheme === 'custom' && (
+              <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between animate-in fade-in duration-200">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className="w-5 h-5 rounded-full border border-white/20 shadow-sm flex-shrink-0"
+                    style={{ backgroundColor: customAccentColor }}
+                  />
+                  <span className="text-xs font-semibold text-[#EDE0E2]">
+                    Custom Hex: <span className="text-accent font-bold uppercase tracking-wider">{customAccentColor}</span>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => customColorInputRef.current?.click()}
+                  className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#EDE0E2] transition-colors"
+                >
+                  Pick Color
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

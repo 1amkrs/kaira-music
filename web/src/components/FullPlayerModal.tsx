@@ -222,7 +222,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
                               e.stopPropagation();
                               removeFromQueue(idx);
                             }}
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-[#9E9094] hover:text-[#E2A9B0] hover:bg-white/10 transition-colors"
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-[#9E9094] hover:text-accent hover:bg-white/10 transition-colors"
                             title="Remove from queue"
                           >
                             <X size={15} />
@@ -254,7 +254,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
               </button>
               <button
                 onClick={togglePlay}
-                className="w-12 h-12 rounded-full bg-[#BAC6D7] text-[#1E242E] flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all"
+                className="w-12 h-12 rounded-full bg-accent text-accent-dark flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
                 title={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
@@ -275,24 +275,31 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
         </div>
       ) : (
         /* ======================== COVER VIEW ======================== */
-        <div className="relative z-10 flex flex-col h-full w-full max-w-lg mx-auto px-6 py-4 justify-between animate-in fade-in-50 duration-300 ease-out">
-          {/* 1. Top Header Bar (1:1 Android Parity) */}
-          <header className="flex items-center justify-between pt-2">
+        <div
+          className={`flex flex-col justify-between flex-1 px-6 sm:px-10 py-6 max-w-lg mx-auto w-full transition-all duration-300 ${
+            activeView === 'cover'
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 translate-y-4 pointer-events-none absolute inset-0'
+          }`}
+        >
+          {/* 1. Header Bar: Collapse Chevron, Title Pill, Right Action Icons */}
+          <header className="flex items-center justify-between">
             <button
               onClick={() => setFullPlayerOpen(false)}
               className="w-11 h-11 rounded-full bg-[#281E22] flex items-center justify-center text-[#EDE0E2] hover:bg-white/10 active:scale-95 transition-all shadow-sm"
-              title="Minimize"
+              title="Minimize Player"
             >
-              <ChevronDown size={24} />
+              <ChevronDown size={22} />
             </button>
 
-            <div className="flex flex-col items-center">
-              <span className="text-[11px] uppercase tracking-widest text-[#9E9094] font-semibold">
+            {/* Now Playing Title Pill */}
+            <div className="px-4 py-1.5 rounded-full bg-[#281E22] border border-white/5 shadow-sm">
+              <span className="text-xs font-semibold tracking-wider text-[#9E9094] uppercase">
                 Now Playing
               </span>
-              <span className="text-sm font-medium text-[#EDE0E2]">Kaira Music</span>
             </div>
 
+            {/* Top Right Action Icons */}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveView('queue')}
@@ -301,7 +308,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
               >
                 <ListMusic size={19} />
                 {queue.length > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#BAC6D7] text-[#1E242E] text-[9px] font-bold flex items-center justify-center tabular-nums">
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent text-accent-dark text-[9px] font-bold flex items-center justify-center tabular-nums">
                     {queue.length > 9 ? '9+' : queue.length}
                   </span>
                 )}
@@ -358,7 +365,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
                 >
                   <Heart
                     size={20}
-                    className={isLiked ? 'fill-[#E2A9B0] text-[#E2A9B0]' : 'text-[#EDE0E2]'}
+                    className={isLiked ? 'fill-accent text-accent' : 'text-[#EDE0E2]'}
                   />
                 </button>
 
@@ -392,7 +399,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
 
               <button
                 onClick={togglePlay}
-                className="w-20 h-20 rounded-full bg-[#BAC6D7] text-[#1E242E] flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all"
+                className="w-20 h-20 rounded-full bg-accent text-accent-dark flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_24px_var(--color-accent-glow)]"
                 title={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
