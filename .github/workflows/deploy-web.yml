@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -44,15 +44,29 @@ jobs:
         run: |
           cd web
           npm run build
+          cp dist/index.html dist/404.html
+
+      - name: Deploy to gh-pages branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: web/dist
+          branch: gh-pages
 
       - name: Configure GitHub Pages
+        id: pages-config
         uses: actions/configure-pages@v4
+        continue-on-error: true
 
       - name: Upload Pages artifact
+        id: pages-artifact
+        if: steps.pages-config.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
         with:
           path: web/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
+        if: steps.pages-config.outcome == 'success'
         uses: actions/deploy-pages@v4
+        continue-on-error: true
