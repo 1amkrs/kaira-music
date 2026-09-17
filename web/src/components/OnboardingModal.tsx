@@ -212,7 +212,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
                   <Sparkles size={13} />
                   <span>LOSSLESS 24-BIT / 192 KHZ</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold font-sequel text-white tracking-tight leading-tight">
+                <h1 className="text-3xl sm:text-4xl font-black font-sequel text-white tracking-tight leading-tight">
                   Lossless Sound. No Compromise.
                 </h1>
                 <p className="text-xs sm:text-sm text-[#9E9094] leading-relaxed">
@@ -293,7 +293,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
                   <Radio size={13} />
                   <span>SEAMLESS INTEGRATIONS</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold font-sequel text-white tracking-tight leading-tight">
+                <h1 className="text-3xl sm:text-4xl font-black font-sequel text-white tracking-tight leading-tight">
                   All Your Music, Unified.
                 </h1>
                 <p className="text-xs sm:text-sm text-[#9E9094] leading-relaxed">
@@ -393,7 +393,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
                   <Palette size={13} />
                   <span>CUSTOMIZATION</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold font-sequel text-white tracking-tight leading-tight">
+                <h1 className="text-3xl sm:text-4xl font-black font-sequel text-white tracking-tight leading-tight">
                   Craft Your Atmosphere.
                 </h1>
                 <p className="text-xs sm:text-sm text-[#9E9094] leading-relaxed">
@@ -495,7 +495,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
                   <CheckCircle2 size={13} />
                   <span>READY FOR AUDIO</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold font-sequel text-white tracking-tight leading-tight">
+                <h1 className="text-3xl sm:text-4xl font-black font-sequel text-white tracking-tight leading-tight">
                   Your Wave Begins.
                 </h1>
                 <p className="text-xs sm:text-sm text-[#9E9094] leading-relaxed">

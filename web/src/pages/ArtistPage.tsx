@@ -136,7 +136,7 @@ export const ArtistPage: React.FC<ArtistPageProps> = ({
                   <span>Verified Artist</span>
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl font-bold font-sequel text-[#EDE0E2] tracking-tight leading-tight truncate">
+                <h1 className="text-3xl sm:text-5xl font-black font-sequel text-[#EDE0E2] tracking-tight leading-tight truncate">
                   {artist.name}
                 </h1>
 

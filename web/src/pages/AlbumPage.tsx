@@ -123,7 +123,7 @@ export const AlbumPage: React.FC<AlbumPageProps> = ({
                 <span>Lossless Album</span>
               </div>
 
-              <h1 className="text-2xl sm:text-4xl font-bold font-sequel text-[#EDE0E2] tracking-tight leading-tight truncate">
+              <h1 className="text-2xl sm:text-4xl font-black font-sequel text-[#EDE0E2] tracking-tight leading-tight truncate">
                 {album.title}
               </h1>
 

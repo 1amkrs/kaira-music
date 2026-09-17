@@ -301,7 +301,7 @@ export const FeedPage: React.FC<FeedPageProps> = ({
     <div className="min-h-full pb-28 pt-2 px-4 sm:px-6 max-w-4xl mx-auto font-sans bg-[#120E11] text-[#EDE0E2] transition-colors duration-300 select-none space-y-8 animate-in fade-in duration-300">
       {/* 1. Top Curved Header Island (1:1 Android Parity) */}
       <div className="bg-[#242125] -mx-4 sm:-mx-6 -mt-2 px-6 pt-4 pb-5 rounded-b-[36px] shadow-lg flex items-center justify-between mb-5">
-        <h1 className="text-3xl sm:text-4xl font-bold font-sequel text-white tracking-tight">Home</h1>
+        <h1 className="text-3xl sm:text-4xl font-black font-sequel text-white tracking-tight">Home</h1>
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => handlePlayAll(CURATED_AUDIOPHILE_TRACKS, true)}

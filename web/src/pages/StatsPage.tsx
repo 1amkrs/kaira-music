@@ -191,7 +191,7 @@ export const StatsPage: React.FC<StatsPageProps> = ({
               <ArrowLeft size={20} />
             </button>
             <div>
-              <h1 className="text-xl font-bold font-sequel text-[#EDE0E2] leading-tight">Your Genres</h1>
+              <h1 className="text-xl font-black font-sequel text-[#EDE0E2] leading-tight">Your Genres</h1>
               <p className="text-xs text-[#9E9094] mt-0.5">Based on your listening history</p>
             </div>
           </div>
@@ -235,7 +235,7 @@ export const StatsPage: React.FC<StatsPageProps> = ({
     <div className="min-h-full pb-32 pt-2 px-4 sm:px-6 max-w-4xl mx-auto font-sans bg-[#120E11] text-[#EDE0E2] transition-colors duration-300 select-none animate-in fade-in duration-300 space-y-5">
       {/* 1. Top Header */}
       <div className="flex items-center justify-between pt-3">
-        <h1 className="text-3xl font-bold font-sequel text-[#EDE0E2] tracking-tight">Stats</h1>
+        <h1 className="text-3xl font-black font-sequel text-[#EDE0E2] tracking-tight">Stats</h1>
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => handleSetView('genres')}

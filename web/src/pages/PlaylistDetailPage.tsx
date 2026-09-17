@@ -193,7 +193,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 
       {/* 2. Playlist Title & Metadata */}
       <div className="mt-4">
-        <h1 className="text-4xl sm:text-5xl font-bold font-sequel text-[#EDE0E2] tracking-tight leading-tight">
+        <h1 className="text-4xl sm:text-5xl font-black font-sequel text-[#EDE0E2] tracking-tight leading-tight">
           {title}
         </h1>
         <p className="text-sm font-medium text-[#9E9094] mt-2">

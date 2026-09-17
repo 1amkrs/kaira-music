@@ -110,7 +110,7 @@ export const LibraryPage: React.FC<LibraryPageProps> = ({ onOpenPlaylist }) => {
       {/* 1. Top Header Bar (1:1 Native Android Parity) */}
       <div className="flex items-center justify-between pt-3">
         <div>
-          <h1 className="text-3xl font-bold font-sequel text-[#EDE0E2] tracking-tight">Playlist</h1>
+          <h1 className="text-3xl font-black font-sequel text-[#EDE0E2] tracking-tight">Playlist</h1>
           <p className="text-sm text-[#9E9094] mt-1">
             {playlistsCount} Playlists • {totalTracksCount} Tracks
           </p>

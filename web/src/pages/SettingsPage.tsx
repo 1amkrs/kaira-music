@@ -403,7 +403,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, onOpenOnboar
         >
           <ArrowLeft size={24} />
         </button>
-        <h1 className="text-2xl font-bold font-sequel text-[#EDE0E2] tracking-tight">Settings</h1>
+        <h1 className="text-2xl font-black font-sequel text-[#EDE0E2] tracking-tight">Settings</h1>
       </div>
 
       <div className="space-y-6">

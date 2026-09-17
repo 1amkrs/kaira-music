@@ -3,15 +3,13 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Sequel';
+  font-family: 'Sequel Black';
   font-style: normal;
-  font-weight: 700;
-  src: local('Sequel 100 Wide Bold'),
-       local('Sequel 100 Wide 75 Bold'),
-       local('Sequel100Wide-75Bold'),
-       local('Sequel 100 Wide 95 Black'),
-       local('Sequel Sans Bold'),
-       local('Sequel Sans'),
+  font-weight: 900;
+  src: local('Sequel 100 Wide 95 Black'),
+       local('Sequel 100 Wide Black'),
+       local('Sequel Sans Heavy'),
+       local('Sequel Black'),
        local('Sequel');
   font-display: swap;
 }
@@ -19,18 +17,19 @@
 @font-face {
   font-family: 'Sequel';
   font-style: normal;
-  font-weight: 800;
+  font-weight: 900;
   src: local('Sequel 100 Wide 95 Black'),
        local('Sequel 100 Wide Black'),
        local('Sequel Sans Heavy'),
+       local('Sequel Black'),
        local('Sequel');
   font-display: swap;
 }
 
 h1, .font-sequel {
-  font-family: 'Sequel', 'Sequel 100 Wide', 'Sequel Sans', 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-weight: 700 !important;
-  letter-spacing: -0.02em;
+  font-family: 'Sequel Black', 'Sequel', 'Sequel 100 Wide', 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em;
 }
 
 :root {
@@ -40,7 +39,7 @@ h1, .font-sequel {
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: 'Google Sans', 'Google Sans Text', system-ui, -apple-system, sans-serif;
   background-color: #080C12;
   min-height: 100vh;
   min-height: 100dvh;

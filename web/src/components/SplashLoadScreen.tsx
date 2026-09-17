@@ -71,9 +71,9 @@ export const SplashLoadScreen: React.FC = () => {
           </div>
         </div>
 
-        {/* Brand Heading strictly in font-bold font-sequel */}
+        {/* Brand Heading strictly in font-black font-sequel */}
         <div className="space-y-1.5">
-          <h1 className="text-3xl sm:text-4xl font-bold font-sequel tracking-tight text-[#EDE0E2]">
+          <h1 className="text-3xl sm:text-4xl font-black font-sequel tracking-tight text-[#EDE0E2]">
             Kaira Music
           </h1>
           <p className="text-xs tracking-widest text-[#E5B6BD] uppercase font-semibold">

@@ -331,7 +331,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <h1 className="text-2xl sm:text-3xl font-bold font-sequel text-[#EDE0E2] tracking-tight truncate">
+                <h1 className="text-2xl sm:text-3xl font-black font-sequel text-[#EDE0E2] tracking-tight truncate">
                   {currentTrack.title}
                 </h1>
                 <p

@@ -181,7 +181,7 @@ export const NewReleasesPage: React.FC<NewReleasesPageProps> = ({ onBack }) => {
             <ArrowLeft size={22} />
           </button>
           <div className="min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-bold font-sequel text-[#EDE0E2] tracking-tight truncate">
+            <h1 className="text-2xl sm:text-3xl font-black font-sequel text-[#EDE0E2] tracking-tight truncate">
               New releases
             </h1>
             <p className="text-xs sm:text-sm text-[#9E9094] mt-0.5 truncate">

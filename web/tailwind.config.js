@@ -22,9 +22,10 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-        sequel: ['Sequel', 'Sequel 100 Wide', 'Sequel Sans', 'Syne', 'sans-serif'],
+        sans: ['Google Sans', 'Google Sans Text', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['Google Sans Text', 'sans-serif'], // Strict compliance: zero monospace
+        sequel: ['Sequel Black', 'Sequel 100 Wide 95 Black', 'Sequel', 'Syne', 'sans-serif'],
+        'sequel-black': ['Sequel Black', 'Sequel 100 Wide 95 Black', 'Sequel', 'Syne', 'sans-serif'],
       },
       backdropBlur: {
         xs: '2px',
