@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Home, ListMusic, BarChart2, Search, Settings, Disc3, ShieldCheck, Sparkles } from 'lucide-react';
+import { Home, ListMusic, BarChart2, Search, Settings, Disc3, ShieldCheck, Sparkles, WifiOff } from 'lucide-react';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { useOfflineStore } from '../store/useOfflineStore';
 import { AiMixGeneratorModal } from './AiMixGeneratorModal';
 
 export type NavTab = 'feed' | 'stats' | 'library' | 'search' | 'settings';
@@ -22,6 +23,7 @@ export const NavigationShell: React.FC<NavigationShellProps> = ({
 }) => {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const dsp = useSettingsStore((s) => s.dsp);
+  const isOnline = useOfflineStore((s) => s.isOnline);
 
   const desktopNavItems = [
     { id: 'feed' as NavTab, label: 'Feed', icon: Home },
@@ -103,6 +105,12 @@ export const NavigationShell: React.FC<NavigationShellProps> = ({
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+        {!isOnline && (
+          <aside className="bg-accent-container/90 border-b border-accent-border/40 text-accent px-4 py-2 text-xs font-semibold flex items-center justify-center gap-2 z-30 animate-in slide-in-from-top-2 duration-200">
+            <WifiOff size={14} />
+            <span>Offline Mode • Playing from local storage</span>
+          </aside>
+        )}
         <div className="flex-1 overflow-y-auto overflow-x-hidden pb-36 md:pb-28">
           {children}
         </div>

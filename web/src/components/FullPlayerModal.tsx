@@ -21,6 +21,7 @@ import { useLibraryStore } from '../store/useLibraryStore';
 import { WavySeekbar } from './WavySeekbar';
 import { SyncedLyricsView } from './SyncedLyricsView';
 import { TrackContextMenuModal } from './TrackContextMenuModal';
+import { DownloadButton } from './DownloadButton';
 
 interface FullPlayerModalProps {
   onGoToArtist?: (artistName: string) => void;
@@ -43,6 +44,7 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
 
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const isPlayingOffline = usePlayerStore((s) => s.isPlayingOffline);
   const currentTime = usePlayerStore((s) => s.currentTime);
   const duration = usePlayerStore((s) => s.duration);
   const shuffle = usePlayerStore((s) => s.shuffle);
@@ -293,9 +295,12 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
             </button>
 
             {/* Now Playing Title Pill */}
-            <div className="px-4 py-1.5 rounded-full bg-[#281E22] border border-white/5 shadow-sm">
+            <div className="px-4 py-1.5 rounded-full bg-[#281E22] border border-white/5 shadow-sm flex items-center gap-1.5">
+              {isPlayingOffline && (
+                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              )}
               <span className="text-xs font-semibold tracking-wider text-[#9E9094] uppercase">
-                Now Playing
+                {isPlayingOffline ? 'Offline Playback' : 'Now Playing'}
               </span>
             </div>
 
@@ -357,6 +362,11 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
               </div>
 
               <div className="flex items-center gap-2.5 flex-shrink-0">
+                {/* Offline Download Button */}
+                <div className="w-11 h-11 rounded-full bg-[#281E22] flex items-center justify-center text-[#EDE0E2] hover:bg-white/10 active:scale-95 transition-all shadow-sm">
+                  <DownloadButton track={currentTrack} size={20} />
+                </div>
+
                 {/* Heart Button */}
                 <button
                   onClick={() => toggleLike(currentTrack)}
@@ -442,10 +452,16 @@ export const FullPlayerModal: React.FC<FullPlayerModalProps> = ({
                 className="bg-[#202936] text-[#A8BED8] rounded-full px-5 py-3 border border-white/5 flex items-center gap-2 font-sans tabular-nums text-xs font-bold tracking-wider hover:bg-[#283446] active:scale-95 transition-all shadow-sm"
                 title="Audiophile Signal Path Inspector"
               >
-                <span className="px-1.5 py-0.5 rounded bg-[#A8BED8]/20 text-[#D0D8E2] text-[10px] font-black">
-                  HQ
+                <span
+                  className={`px-1.5 py-0.5 rounded text-[10px] font-black ${
+                    isPlayingOffline
+                      ? 'bg-accent/20 text-accent'
+                      : 'bg-[#A8BED8]/20 text-[#D0D8E2]'
+                  }`}
+                >
+                  {isPlayingOffline ? 'OFFLINE' : 'HQ'}
                 </span>
-                <span>{qualityLabel}</span>
+                <span>{isPlayingOffline ? 'IndexedDB Local' : qualityLabel}</span>
               </button>
 
               {/* Repeat Pill Button */}

@@ -9,6 +9,7 @@ export type RepeatMode = 'off' | 'all' | 'one';
 export interface PlayerState {
   currentTrack: AudioTrack | null;
   isPlaying: boolean;
+  isPlayingOffline: boolean;
   currentTime: number;
   duration: number;
   buffered: number;
@@ -136,6 +137,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => {
   return {
     currentTrack: null,
     isPlaying: false,
+    isPlayingOffline: false,
     currentTime: 0,
     duration: 0,
     buffered: 0,
@@ -196,6 +198,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => {
 
       try {
         await engine.loadAndPlay(track);
+        set({ isPlayingOffline: engine.isPlayingOffline() });
       } catch (e) {
         console.error('Failed to play track', e);
       }

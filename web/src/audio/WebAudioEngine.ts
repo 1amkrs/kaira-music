@@ -3,6 +3,7 @@ import { DspChain } from './DspChain';
 import { MediaSessionController } from './MediaSessionController';
 import { YouTubeAudioBridge } from './YouTubeAudioBridge';
 import { musicService } from '../services/musicService';
+import { offlineStorage } from '../services/offlineStorage';
 
 export type { PlaybackEvent };
 
@@ -12,6 +13,7 @@ export class WebAudioEngine {
   private audio: HTMLAudioElement;
   private youtubeBridge: YouTubeAudioBridge;
   private activeEngine: 'html5' | 'youtube' = 'youtube';
+  private currentOfflineObjectUrl: string | null = null;
 
   private ctx: AudioContext | null = null;
   private sourceNode: MediaElementAudioSourceNode | null = null;
@@ -202,6 +204,54 @@ export class WebAudioEngine {
     this.currentTrack = track;
     this.mediaSession.updateTrack(track);
 
+    // 0. Check offline IndexedDB storage first (100% offline playback with zero network dependency)
+    const offlineTrack = await offlineStorage.getDownloadedTrack(track.id);
+    if (offlineTrack && offlineTrack.audioBlob && offlineTrack.audioBlob.size > 0) {
+      this.youtubeBridge.pause();
+      this.activeEngine = 'html5';
+
+      try {
+        this.initAudioContext();
+        if (this.ctx?.state === 'suspended') {
+          await this.ctx.resume().catch(() => {});
+        }
+      } catch (e) {
+        console.warn('AudioContext init warning', e);
+      }
+
+      // Revoke previous object URL if any
+      if (this.currentOfflineObjectUrl) {
+        URL.revokeObjectURL(this.currentOfflineObjectUrl);
+        this.currentOfflineObjectUrl = null;
+      }
+
+      const objectUrl = URL.createObjectURL(offlineTrack.audioBlob);
+      this.currentOfflineObjectUrl = objectUrl;
+
+      this.audio.src = objectUrl;
+      this.audio.load();
+
+      try {
+        await this.audio.play();
+      } catch (e) {
+        console.warn('Offline audio play error, retrying', e);
+        try {
+          this.audio.src = objectUrl;
+          this.audio.load();
+          await this.audio.play();
+        } catch (e2) {
+          console.error('Offline audio play failed', e2);
+        }
+      }
+      return;
+    }
+
+    // Clean up offline object URL if streaming from network
+    if (this.currentOfflineObjectUrl) {
+      URL.revokeObjectURL(this.currentOfflineObjectUrl);
+      this.currentOfflineObjectUrl = null;
+    }
+
     // Determine whether stream is a verified custom ClashFLAC backend or direct full-length file
     const streamUrl = track.streamUrl || '';
     const isDirectFullFile =
@@ -345,6 +395,10 @@ export class WebAudioEngine {
     return this.ctx?.sampleRate || 48000;
   }
 
+  public isPlayingOffline(): boolean {
+    return Boolean(this.currentOfflineObjectUrl);
+  }
+
   public getSignalPathInfo(track: AudioTrack | null): SignalPathNodeInfo[] {
     const hwSampleRate = this.getContextSampleRate();
     const dspSettings = this.dspChain?.getSettings();
@@ -357,6 +411,37 @@ export class WebAudioEngine {
           detail: 'No track loaded',
           status: 'bypassed',
           color: 'text-slate-400',
+        },
+      ];
+    }
+
+    if (this.currentOfflineObjectUrl) {
+      return [
+        {
+          name: 'Source Stream (Offline IndexedDB)',
+          detail: '100% Offline Local Audio Blob • Zero Network Latency • Uncompressed Pipeline',
+          status: 'lossless',
+          color: 'text-brand-lime',
+        },
+        {
+          name: 'Hardware Accelerated WebAudio Decoder',
+          detail: 'Direct hardware media decoder with lossless floating-point audio pipeline',
+          status: 'direct',
+          color: 'text-brand-cyan',
+        },
+        {
+          name: 'DSP Engine Chain',
+          detail: isDspBypassed
+            ? 'Bit-Perfect Direct Bypass'
+            : `Active Master EQ & Dynamic Limiter (Post-Processing Ready)`,
+          status: isDspBypassed ? 'direct' : 'dsp',
+          color: isDspBypassed ? 'text-emerald-400' : 'text-amber-300',
+        },
+        {
+          name: 'Audio Hardware Output',
+          detail: `AudioContext ${hwSampleRate} Hz 32-bit Float • Studio Master Clock`,
+          status: 'lossless',
+          color: 'text-brand-lime',
         },
       ];
     }

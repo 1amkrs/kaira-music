@@ -11,15 +11,17 @@ import {
   Play,
   Trash2,
   RefreshCw,
+  HardDrive,
 } from 'lucide-react';
 import { useLibraryStore } from '../store/useLibraryStore';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { useOfflineStore } from '../store/useOfflineStore';
 import { ytMusicApi } from '../services/ytMusicApi';
 import { Playlist } from '../services/storage';
 
 interface LibraryPageProps {
-  onOpenPlaylist?: (playlistId: string | 'liked') => void;
+  onOpenPlaylist?: (playlistId: string | 'liked' | 'downloaded') => void;
 }
 
 type SortOption = 'custom' | 'name' | 'tracks' | 'recent';
@@ -43,10 +45,23 @@ export const LibraryPage: React.FC<LibraryPageProps> = ({ onOpenPlaylist }) => {
   const isYtMusicConnected = useSettingsStore((s) => s.isYtMusicConnected);
   const playTrack = usePlayerStore((s) => s.playTrack);
 
+  const downloadedTracks = useOfflineStore((s) => s.downloadedTracks);
+  const totalStorageBytes = useOfflineStore((s) => s.totalStorageBytes);
+
+  const formatBytes = (bytes: number): string => {
+    if (bytes <= 0) return '0 MB';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  };
+
   // Counts
-  const playlistsCount = 1 + playlists.length;
+  const playlistsCount = 2 + playlists.length; // Liked Songs + Downloaded Songs + user playlists
   const totalTracksCount =
-    likedTracks.length + playlists.reduce((sum, p) => sum + p.tracks.length, 0);
+    likedTracks.length +
+    downloadedTracks.length +
+    playlists.reduce((sum, p) => sum + p.tracks.length, 0);
 
   // Formatted date for Liked Songs
   const likedSongsDate = 'Sep 16, 2026';
@@ -213,6 +228,41 @@ export const LibraryPage: React.FC<LibraryPageProps> = ({ onOpenPlaylist }) => {
             }}
             className="p-2 text-[#9E9094] hover:text-white rounded-full hover:bg-white/10 active:scale-95 transition-all flex-shrink-0"
             title="Options"
+          >
+            <MoreVertical size={18} />
+          </button>
+        </div>
+
+        {/* Pinned Downloaded Songs Card */}
+        <div
+          onClick={() => onOpenPlaylist?.('downloaded')}
+          className="bg-[#211B1E] rounded-[24px] p-3.5 flex items-center justify-between cursor-pointer hover:bg-white/[0.04] active:scale-[0.99] transition-all shadow-md border border-white/[0.04] group"
+        >
+          <div className="flex items-center gap-3.5 min-w-0 flex-1 pr-2">
+            <div className="w-14 h-14 rounded-2xl bg-accent-container text-accent flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-all shadow-inner border border-accent-border/30">
+              <HardDrive size={24} className="stroke-[2]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[15px] font-semibold text-white flex items-center gap-2 truncate">
+                <span>Downloaded Songs</span>
+                <span className="text-xs text-accent flex items-center gap-0.5 bg-accent-border/40 px-2 py-0.5 rounded-full">
+                  <Pin size={10} className="fill-accent" />
+                  <span>Offline</span>
+                </span>
+              </div>
+              <div className="text-xs text-[#9E9094] mt-1 truncate">
+                {downloadedTracks.length} tracks • {formatBytes(totalStorageBytes)}
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenPlaylist?.('downloaded');
+            }}
+            className="p-2 text-[#9E9094] hover:text-white rounded-full hover:bg-white/10 active:scale-95 transition-all flex-shrink-0"
+            title="Open downloaded tracks"
           >
             <MoreVertical size={18} />
           </button>

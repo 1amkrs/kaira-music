@@ -12,13 +12,16 @@ import {
   Share2,
   Trash2,
   Music,
+  HardDrive,
 } from 'lucide-react';
 import { useLibraryStore } from '../store/useLibraryStore';
 import { usePlayerStore } from '../store/usePlayerStore';
+import { useOfflineStore } from '../store/useOfflineStore';
 import { AudioTrack } from '../audio/types';
+import { DownloadButton } from '../components/DownloadButton';
 
 interface PlaylistDetailPageProps {
-  playlistId: string | 'liked';
+  playlistId: string | 'liked' | 'downloaded';
   onBack: () => void;
 }
 
@@ -26,6 +29,14 @@ function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes <= 0) return '0 MB';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 }
 
 export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
@@ -37,6 +48,10 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   const deletePlaylist = useLibraryStore((s) => s.deletePlaylist);
   const toggleLike = useLibraryStore((s) => s.toggleLike);
   const isLiked = useLibraryStore((s) => s.isLiked);
+
+  const downloadedTracks = useOfflineStore((s) => s.downloadedTracks);
+  const totalStorageBytes = useOfflineStore((s) => s.totalStorageBytes);
+  const clearAllDownloads = useOfflineStore((s) => s.clearAllDownloads);
 
   const playTrack = usePlayerStore((s) => s.playTrack);
   const currentTrack = usePlayerStore((s) => s.currentTrack);
@@ -59,12 +74,34 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   }, []);
 
   const isLikedPlaylist = playlistId === 'liked';
-  const customPlaylist = !isLikedPlaylist
+  const isDownloadedPlaylist = playlistId === 'downloaded';
+  const customPlaylist = !isLikedPlaylist && !isDownloadedPlaylist
     ? playlists.find((p) => p.id === playlistId)
     : null;
 
-  const title = isLikedPlaylist ? 'Liked Songs' : customPlaylist?.name || 'Playlist';
-  const rawTracks = isLikedPlaylist ? likedTracks : customPlaylist?.tracks || [];
+  const title = isLikedPlaylist
+    ? 'Liked Songs'
+    : isDownloadedPlaylist
+    ? 'Downloaded Songs'
+    : customPlaylist?.name || 'Playlist';
+
+  const rawTracks: AudioTrack[] = isLikedPlaylist
+    ? likedTracks
+    : isDownloadedPlaylist
+    ? downloadedTracks.map((d) => ({
+        id: d.id,
+        title: d.title,
+        artist: d.artist,
+        album: d.album,
+        artworkUrl: d.artworkUrl,
+        duration: d.duration,
+        streamUrl: d.streamUrl || '',
+        quality: d.quality || 'LOSSLESS_CD',
+        bitDepth: 16,
+        sampleRate: 44100,
+        codec: 'Local Audio',
+      }))
+    : customPlaylist?.tracks || [];
 
   // Sort tracks according to selection
   const tracks = [...rawTracks].sort((a, b) => {
@@ -117,6 +154,12 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
     setIsMenuOpen(false);
     if (isLikedPlaylist) {
       alert('Liked Songs collection cannot be deleted.');
+      return;
+    }
+    if (isDownloadedPlaylist) {
+      if (confirm('Clear all downloaded offline songs?')) {
+        clearAllDownloads();
+      }
       return;
     }
     if (confirm(`Delete playlist "${title}"?`)) {
@@ -184,7 +227,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-rose-950/30 text-[#E2A9B0] text-left transition-colors"
               >
                 <Trash2 size={18} />
-                <span>Delete playlist</span>
+                <span>{isDownloadedPlaylist ? 'Clear all downloads' : 'Delete playlist'}</span>
               </button>
             </div>
           )}
@@ -197,7 +240,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
           {title}
         </h1>
         <p className="text-sm font-medium text-[#9E9094] mt-2">
-          {tracks.length} songs • {formattedDate}
+          {tracks.length} songs • {isDownloadedPlaylist ? `${formatBytes(totalStorageBytes)} • Offline Ready` : formattedDate}
         </p>
       </div>
 
@@ -287,11 +330,13 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                   </div>
                 </div>
 
-                {/* Right: Duration & Like Heart */}
-                <div className="flex items-center gap-3 flex-shrink-0">
+                {/* Right: Duration, Download & Like Heart */}
+                <div className="flex items-center gap-2.5 flex-shrink-0">
                   <span className="text-xs font-sans tabular-nums text-[#9E9094]">
                     {formatDuration(track.duration)}
                   </span>
+
+                  <DownloadButton track={track} size={16} />
 
                   <button
                     onClick={(e) => {

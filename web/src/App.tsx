@@ -27,7 +27,7 @@ export const App: React.FC = () => {
   useKeyboardShortcuts();
 
   const [activeTab, setActiveTab] = useState<NavTab>('feed');
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | 'liked' | null>(null);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | 'liked' | 'downloaded' | null>(null);
   const [selectedArtistName, setSelectedArtistName] = useState<string | null>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<MusicAlbum | null>(null);
   const [isNewReleasesOpen, setIsNewReleasesOpen] = useState<boolean>(false);

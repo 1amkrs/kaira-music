@@ -20,6 +20,7 @@ import {
   DynamicTrackSkeleton,
   DynamicAlbumGridSkeleton,
 } from '../components/skeletons/DynamicSkeleton';
+import { DownloadButton } from '../components/DownloadButton';
 
 export interface ArtistPageProps {
   artistName: string;
@@ -222,6 +223,8 @@ export const ArtistPage: React.FC<ArtistPageProps> = ({
                         <span className="text-xs text-[#8E8088] tabular-nums hidden sm:inline">
                           {formatDuration(track.duration)}
                         </span>
+
+                        <DownloadButton track={track} size={16} />
 
                         <button
                           type="button"
